@@ -1,7 +1,8 @@
 import { useState, useActionState, startTransition } from 'react';
 import signupAction from './action';
+import { checkIfFormComplete, createFormData } from './utils';
 
-interface SignupType {
+export interface SignupType {
   email: string;
   nickname: string;
   password: string;
@@ -9,7 +10,8 @@ interface SignupType {
   isChecked: boolean;
 }
 
-const INITIAL = {
+// 변수명
+const INITIAL_FORM_DATA_STATE = {
   email: '',
   nickname: '',
   password: '',
@@ -17,8 +19,10 @@ const INITIAL = {
   isChecked: false,
 };
 
+const SPACE_KEY = ' ';
+
 export default function useSignupForm() {
-  const [formData, setFormData] = useState<SignupType>(INITIAL);
+  const [formData, setFormData] = useState<SignupType>(INITIAL_FORM_DATA_STATE);
   const [isPasswordVisible, setIsPasswordVisible] = useState<Record<string, boolean>>({
     password: false,
     checkPassword: false,
@@ -46,6 +50,11 @@ export default function useSignupForm() {
     }
   };
 
+  // const handlePreventSpace = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key !== SPACE_KEY) return;
+  //   e.preventDefault();
+  // };
+
   const toggleVisiblePassword = (name: string) => {
     setIsPasswordVisible((prev) => ({
       ...prev,
@@ -53,25 +62,44 @@ export default function useSignupForm() {
     }));
   };
 
-  const isFormIncomplete =
-    !formData.email ||
-    !formData.nickname ||
-    !formData.password ||
-    !formData.checkPassword ||
-    !formData.isChecked;
+  // 부정조건 > 긍정조건 및 유틸화
+  // const isFormIncomplete =
+  //   !formData.email ||
+  //   !formData.nickname ||
+  //   !formData.password ||
+  //   !formData.checkPassword ||
+  //   !formData.isChecked;
+
+  //폼이 완성된 상태의 변수가 필요하다 -> !isFormIncomplete
+
+  // const isFormcomplete =
+  // formData.email &&
+  // formData.nickname &&
+  // formData.password &&
+  // formData.checkPassword &&
+  // formData.isChecked;
+
+  const isFormComplete = checkIfFormComplete(formData);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const fd = new FormData();
-    fd.append('email', formData.email);
-    fd.append('nickname', formData.nickname);
-    fd.append('password', formData.password);
-    fd.append('checkPassword', formData.checkPassword);
+    // const fd = new FormData();
+    // fd.append('email', formData.email);
+    // fd.append('nickname', formData.nickname);
+    // fd.append('password', formData.password);
+    // fd.append('checkPassword', formData.checkPassword);
+
+    const { isChecked, ...formDataWithoutCheck } = formData;
+    console.log({ isChecked });
+    const createdFormData = createFormData(formDataWithoutCheck);
 
     startTransition(() => {
-      formAction(fd);
+      formAction(createdFormData);
     });
+    // startTransition(() => {
+    //   formAction(fd);
+    // });
   };
 
   return {
@@ -81,7 +109,7 @@ export default function useSignupForm() {
     handlePreventSpace,
     isPasswordVisible,
     toggleVisiblePassword,
-    isFormIncomplete,
+    isFormIncomplete: !isFormComplete,
     handleFormSubmit,
     state,
     isPending,

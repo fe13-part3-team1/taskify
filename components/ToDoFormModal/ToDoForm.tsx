@@ -12,31 +12,32 @@ export interface TodoFormType {
   required: boolean;
 }
 
-export default function ToDoForm({ cardId }: { cardId?: number }) {
-  const TODOFORM: TodoFormType[] = [
-    {
-      name: 'email',
-      fieldType: 'input',
-      label: '제목',
-      placeholder: '제목을 입력해 주세요',
-      required: true,
-    },
-    {
-      name: 'description',
-      fieldType: 'textarea',
-      label: '설명',
-      placeholder: '설명을 입력해 주세요',
-      required: true,
-    },
-    {
-      name: 'tag',
-      fieldType: 'input',
-      label: '태그',
-      placeholder: '입력 후 Enter',
-      required: false,
-    },
-  ];
+// 변수명
+const TO_DO_FORM: TodoFormType[] = [
+  {
+    name: 'email',
+    fieldType: 'input',
+    label: '제목',
+    placeholder: '제목을 입력해 주세요',
+    required: true,
+  },
+  {
+    name: 'description',
+    fieldType: 'textarea',
+    label: '설명',
+    placeholder: '설명을 입력해 주세요',
+    required: true,
+  },
+  {
+    name: 'tag',
+    fieldType: 'input',
+    label: '태그',
+    placeholder: '입력 후 Enter',
+    required: false,
+  },
+];
 
+export default function ToDoForm({ cardId }: { cardId?: number }) {
   return (
     <>
       <div className="flex flex-col gap-8 md:flex-row">

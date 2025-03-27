@@ -18,11 +18,13 @@ export default function DashboardListItem({
   id,
   title,
   color,
+  // boolean 변수명
   createdByMe,
   isSelected,
 }: DashboardListItemProps) {
   return (
     <li className={clsx('rounded-sm', isSelected && 'bg-violet8')}>
+      {/* path 상수화 */}
       <Link href={`/dashboard/${id}`} className="flex h-[42px] items-center gap-4 px-3 py-2">
         <DashboardColorIcon color={color} />
         <div className="flex min-w-0 items-center gap-[6px]">

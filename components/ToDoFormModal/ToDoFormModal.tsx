@@ -7,8 +7,14 @@ interface ToDoFormProps {
   cardId?: number;
 }
 
+const TO_DO_FORM_TYPE = {
+  CREATE: '수정',
+  UPDATE: '생성',
+} as const;
+
 export default function ToDoFormModal({ open, onClose, cardId }: ToDoFormProps) {
-  const CreateOrUpdate = cardId ? '수정' : '생성';
+  // 변수명
+  const CreateOrUpdate = cardId ? TO_DO_FORM_TYPE.UPDATE : TO_DO_FORM_TYPE.CREATE;
   return (
     <Modal
       onClose={onClose}

@@ -1,4 +1,4 @@
-import "./globals.css";
+import './globals.css';
 
 export default function RootLayout({
   children,
@@ -8,6 +8,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>{children}</body>
+
+      <div id="modal-root" />
     </html>
   );
 }

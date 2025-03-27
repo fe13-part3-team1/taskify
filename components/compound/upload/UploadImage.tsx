@@ -26,11 +26,17 @@ const UploadImage = ({ image, onChange, id }: UploadImageProps) => {
         onChange={onChange}
       />
       <button className="cursor-pointer rounded-lg" onClick={triggerFileInput}>
-        {image ? (
+        {/* {image ? (
           <Image src={image} alt="uploaded" fill />
         ) : (
           <Image src="/upload-default-image.svg" alt="default" fill />
-        )}
+        )} */}
+
+        <Image
+          src={image || '/upload-default-image.svg'}
+          alt={image ? 'uploaded' : 'default'}
+          fill
+        />
       </button>
     </div>
   );

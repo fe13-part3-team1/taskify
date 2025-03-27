@@ -13,7 +13,7 @@ interface Member {
 }
 
 export default function MemberBadgeList({
-  members,
+  members = [], // fallbacck 데이터
   totalCount,
 }: {
   members: Member[];
@@ -26,7 +26,7 @@ export default function MemberBadgeList({
   return (
     <ul className="ml-4 flex items-center md:ml-8 lg:ml-10">
       {/* FIXME: 뱃지 반응형 크기 - mobile에서 size가 34 */}
-      {members.map(({ id }, idx) => {
+      {members?.map(({ id }, idx) => {
         return (
           idx < 4 && (
             <li key={id} className={clsx(idx !== 0 && '-ml-3', idx > 1 && 'hidden lg:block')}>

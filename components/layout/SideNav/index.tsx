@@ -9,7 +9,8 @@ import { mockDashboards, MockDashboard } from '@/mocks/dashboards';
 
 export default function SideNav() {
   // mock data 적용
-  const [dashboards, setDashboards] = useState<MockDashboard[]>([]);
+  // const [dashboards, setDashboards] = useState<MockDashboard[]>([]);
+  const [dashboards, setDashboards] = useState<MockDashboard[]>(mockDashboards);
 
   useEffect(() => {
     setDashboards(mockDashboards);
