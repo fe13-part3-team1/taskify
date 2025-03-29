@@ -31,10 +31,8 @@ export default function Modal({
   if (!isOpen) return null;
 
   const handleSubmitClick = () => {
-    if (onSubmit) {
-      onSubmit();
-    }
-    onClose();
+    if (!onSubmit) return onClose();
+    onSubmit();
   };
 
   const twoButton = cancelMessage && submitMessage;
@@ -72,8 +70,8 @@ export default function Modal({
             <Button
               size={twoButton ? 'modal' : 'modalAlert'}
               onClick={handleSubmitClick}
-              disabled={disabled}
               fullWidth
+              disabled={disabled}
             >
               {submitMessage}
             </Button>

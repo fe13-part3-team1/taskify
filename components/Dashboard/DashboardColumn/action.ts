@@ -11,7 +11,7 @@ interface ColumnPromise {
   data: ColumnsType[];
 }
 
-export default async function GetDashboardColumn(dashboardId: number) {
+export default async function getDashboardColumn(dashboardId: number) {
   try {
     const response = await api.get<ColumnPromise>(`/columns?dashboardId=${dashboardId}`);
     return response.data;

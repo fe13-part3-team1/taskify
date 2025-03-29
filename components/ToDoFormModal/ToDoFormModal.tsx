@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
 import { SearchableDropdown, SelectionDropdown } from '../common/Dropdown';
 import Modal from '../common/Modal';
 import FormField from '../compound/form/FormField';
@@ -11,7 +10,9 @@ import { DropdownItem } from '../common/Dropdown/types';
 import UserBadge from '../UserBadge/UserBadge';
 import { getMembers, Member } from './action';
 import DueDate from './DueDate';
+import useDashboardParamsId from '../Dashboard/useDashboardParamsId';
 import Pencil from '@/public/icons/pencil.svg';
+
 interface ToDoFormProps {
   open: boolean;
   onClose: () => void;
@@ -29,8 +30,7 @@ const INITIAL_MEMBER_VALUE = {
 export default function ToDoFormModal({ open, onClose, cardId, columnId }: ToDoFormProps) {
   const [dashboardMembers, setDashboardMembers] = useState<Member[]>([INITIAL_MEMBER_VALUE]);
 
-  const params = useParams<{ dashboardId: string }>();
-  const dashboardId = Number(params.dashboardId);
+  const { dashboardId } = useDashboardParamsId();
 
   const {
     dueDate,
