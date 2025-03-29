@@ -11,3 +11,10 @@ export default function formatDateTime(dateValue: Date | null): string {
 
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
+
+export function formatDate(dateString: string): string {
+  if (!dateString) return '';
+
+  const [date] = dateString.split(' ');
+  return date.replace(/-/g, '.');
+}

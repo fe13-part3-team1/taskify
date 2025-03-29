@@ -14,7 +14,7 @@ export default async function DashboardId({
   if (!columns) return;
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex h-full flex-col overflow-x-scroll lg:flex-row">
       {columns.map((column) => (
         <DashboardColumn key={column.id} title={column.title} id={column.id} />
       ))}
