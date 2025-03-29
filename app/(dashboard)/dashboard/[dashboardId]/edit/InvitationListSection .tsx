@@ -5,6 +5,8 @@ import InviteModal from './InviteModal';
 import { useMemo, useState } from 'react';
 import { mockInvitations } from '@/mocks/invitations';
 import AddBoxIcon from '@/assets/icons/AddBoxIcon';
+import PaginationItems from '@/components/Pagination/PaginationItems';
+import PaginationControls from '@/components/Pagination/PaginationControls';
 
 interface Props {
   dashboardId: string;
@@ -37,14 +39,24 @@ export default function InvitationListSection({ dashboardId }: Props) {
     }
   };
 
-  console.log('dashboardId:', dashboardId);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(invitations.length / itemsPerPage);
+
+  const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const goToNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
     <div id="section" className="rounded-2xl bg-white py-[32px]">
       <div className="mb-[27px] flex items-center justify-between px-[28px]">
         <h3 className="text-bold24">초대 내역</h3>
         <div className="flex items-center gap-4">
-          <div>페이지네이션 버튼</div>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            goToPrev={goToPrev}
+            goToNext={goToNext}
+          />
           <Button
             size="w-[109px] h-[32px] rounded-sm"
             className="flex gap-[10px]"
@@ -58,18 +70,28 @@ export default function InvitationListSection({ dashboardId }: Props) {
 
       <div className="w-full rounded-lg">
         <h4 className="text-gray400 text-regular16 px-[28px]">이메일</h4>
-        {invitations.map((inv) => (
-          <div key={inv.id} className="border-gray200 border-b">
-            <div className="flex justify-between px-[28px] py-[16px]">
-              <div className="flex items-center gap-[12px]">
-                <span>{inv.invitee.email}</span>
-              </div>
-              <Button variant="ghost" size="delete" onClick={() => handleCancel(inv.id)}>
-                취소
-              </Button>
-            </div>
-          </div>
-        ))}
+
+        <PaginationItems
+          data={invitations}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          renderItems={(pageItems) => (
+            <>
+              {pageItems.map((item) => (
+                <div key={item.id} className="border-gray200 border-b">
+                  <div className="flex justify-between px-[28px] py-[16px]">
+                    <div className="flex items-center gap-[12px]">
+                      <span>{item.invitee.email}</span>
+                    </div>
+                    <Button variant="ghost" size="delete" onClick={() => handleCancel(item.id)}>
+                      취소
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+        />
       </div>
 
       <InviteModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
