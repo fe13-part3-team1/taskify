@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useState, useRef } from 'react';
 import UserBadge from '@/components/UserBadge/UserBadge';
+import { useClickOutside } from '@/hooks/useClickOutside';
 import ROUTES from '@/constants/routes';
 import INTERNAL_API from '@/constants/api/internal';
 import { removeItem } from '@/utils/localstorage';
@@ -15,8 +16,8 @@ export default function UserMenu({
   profileImageUrl: string;
 }) {
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -26,20 +27,7 @@ export default function UserMenu({
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        event.target instanceof Node &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        closeMenu();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useClickOutside(dropdownRef, closeMenu);
 
   const logout = async () => {
     const res = await fetch(`${INTERNAL_API.AUTH.LOGOUT}`, {
