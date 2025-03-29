@@ -5,20 +5,24 @@ import InviteModal from './InviteModal';
 import { useMemo, useState } from 'react';
 import { mockInvitations } from '@/mocks/invitations';
 import AddBoxIcon from '@/assets/icons/AddBoxIcon';
+import { api } from '@/lib/api';
+import EXTERNAL_API from '@/constants/api/external';
+import { useModal } from '@/hooks/useModal';
 
 interface Props {
   dashboardId: string;
 }
 
 export default function InvitationListSection({ dashboardId }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, open, close } = useModal();
+  const dashboardIdNum = Number(dashboardId);
 
   const invitees = useMemo(
     () =>
       mockInvitations.filter(
-        (inv) => inv.dashboard.id === Number(dashboardId) && inv.inviteAccepted === null
+        (inv) => inv.dashboard.id === dashboardIdNum && inv.inviteAccepted === null
       ),
-    [dashboardId]
+    [dashboardIdNum]
   );
 
   const [invitations, setInvitations] = useState(invitees);
@@ -37,19 +41,13 @@ export default function InvitationListSection({ dashboardId }: Props) {
     }
   };
 
-  console.log('dashboardId:', dashboardId);
-
   return (
     <div id="section" className="rounded-2xl bg-white py-[32px]">
       <div className="mb-[27px] flex items-center justify-between px-[28px]">
         <h3 className="text-bold24">초대 내역</h3>
         <div className="flex items-center gap-4">
           <div>페이지네이션 버튼</div>
-          <Button
-            size="w-[109px] h-[32px] rounded-sm"
-            className="flex gap-[10px]"
-            onClick={() => setIsOpen(true)}
-          >
+          <Button size="w-[109px] h-[32px] rounded-sm" className="flex gap-[10px]" onClick={open}>
             <AddBoxIcon width="14" height="14" color="white" />
             <span className="text-medium14">초대하기</span>
           </Button>
@@ -72,7 +70,16 @@ export default function InvitationListSection({ dashboardId }: Props) {
         ))}
       </div>
 
-      <InviteModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <InviteModal
+        isOpen={isOpen}
+        onClose={close}
+        onInvite={async (email) => {
+          await api.post(EXTERNAL_API.DASHBOARDS.invite(dashboardIdNum), {
+            email,
+            dashboardIdNum,
+          });
+        }}
+      />
     </div>
   );
 }
