@@ -119,8 +119,8 @@ const ColumnDetailModal = ({
         <div className="flex items-center justify-center">
           <MenuDropdown
             options={[
-              { id: 1, value: '수정' },
-              { id: 2, value: '삭제' },
+              { id: 1, value: '수정하기' },
+              { id: 2, value: '삭제하기' },
             ]}
             onSelect={(option) => {
               if (option.id === 1) {
