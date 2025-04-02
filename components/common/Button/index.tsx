@@ -26,7 +26,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={clsx(
-        'flex items-center justify-center overflow-hidden p-2 font-medium',
+        'flex items-center justify-center p-2 font-medium',
         selectedSize,
         variants[variant],
         fullWidth && 'w-full',
@@ -34,9 +34,7 @@ export default function Button({
       )}
       {...props}
     >
-      <div className="flex items-center overflow-hidden text-ellipsis whitespace-nowrap">
         {children}
-      </div>
     </button>
   );
 }

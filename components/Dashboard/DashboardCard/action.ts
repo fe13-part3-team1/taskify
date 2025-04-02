@@ -1,31 +1,14 @@
 'use server';
 
 import { api } from '@/lib/api';
-
-interface CardsType {
-  id: number;
-  title: string;
-  description: string;
-  tags: string[];
-  dueDate: string;
-  assignee: {
-    id: number;
-    nickname: string;
-    profileImageUrl: string | null;
-  };
-  imageUrl: string;
-}
+import { CardType } from './DashboardCard';
 
 interface CardsPromise {
-  cards: CardsType[];
+  cards: CardType[];
   totalCount: number;
 }
 
-export default async function GetDashboardCard(id: number) {
-  try {
-    const response = await api.get<CardsPromise>(`/cards?columnId=${id}`);
-    return response;
-  } catch (err) {
-    console.error(err);
-  }
+export default async function getDashboardCard(id: number) {
+  const response = await api.get<CardsPromise>(`/cards?columnId=${id}`);
+  return response;
 }

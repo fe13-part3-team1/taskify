@@ -10,7 +10,7 @@ const sizes = {
   addTodo: 'h-[32px] md:h-[40px] rounded-md',
   addColumn: 'w-full h-[66px] text-bold18 md:h-[70px] lg:w-[354px] rounded-lg',
   dashboardCard:
-    'h-[58px] text-semi14 md:w-[247px] md:h-[68px] md:text-semi16 lg:w-[332px] lg:h-[70px] rounded-lg',
+    'h-[58px] text-semi14 md:h-[68px] md:text-semi16 lg:h-[70px] rounded-lg',
   deleteDashboard: 'h-[52px] text-medium16 md:w-[320px] md:h-[62px] md:text-medium18 rounded-lg',
 };
 

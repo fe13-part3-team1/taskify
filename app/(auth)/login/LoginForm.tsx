@@ -2,25 +2,28 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import clsx from 'clsx';
 import FormField from '@/components/compound/form/FormField';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import { validateEmail, validatePassword } from '@/utils/authValidate';
 import { setItem } from '@/utils/localstorage';
+import Open from '@/public/icons/openEye.svg';
+import Close from '@/public/icons/closeEye.svg';
 
 export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(true);
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const hasEmailClickedRef = useRef<boolean>(false);
   const hasPasswordClickedRef = useRef<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-  const canSubmit =
-    hasEmailClickedRef.current && hasPasswordClickedRef.current && isEmailValid && isPasswordValid;
+  const canSubmit = isEmailValid && isPasswordValid;
 
   const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     hasEmailClickedRef.current = true;
@@ -47,6 +50,7 @@ export default function LoginForm() {
 
     if (result.success) {
       router.push('/mydashboard');
+      setItem('userInfo', result.data.user);
       setItem('accessToken', result.data.accessToken);
     } else {
       setModalMessage(result.message);
@@ -68,19 +72,25 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={handleEmailBlur}
-            isValid={isEmailValid}
+            isValid={!hasEmailClickedRef.current || isEmailValid}
           />
           <FormField
             id="password"
             name="password"
             fieldType="input"
             label="비밀번호"
-            type="password"
+            type={isPasswordVisible ? 'text' : 'password'}
             errorMessage="8자 이상 작성해 주세요."
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={handlePasswordBlur}
-            isValid={isPasswordValid}
+            isValid={!hasPasswordClickedRef.current || isPasswordValid}
+            rightIcon={
+              <PasswordToggle
+                isEyeOpen={!isPasswordVisible}
+                onClick={() => setIsPasswordVisible((prev) => !prev)}
+              />
+            }
           />
         </div>
         <Button size="auth" fullWidth={true} type="submit" disabled={!canSubmit}>
@@ -95,8 +105,26 @@ export default function LoginForm() {
         submitMessage="확인"
         onClose={() => setIsModalOpen(false)}
       >
-        {modalMessage}
+        <div className="text-black200 text-medium16 sm:text-medium20 flex w-full justify-center">
+          {modalMessage}
+        </div>
       </Modal>
     </>
+  );
+}
+
+function PasswordToggle({
+  isEyeOpen,
+  onClick,
+  className = '',
+}: {
+  isEyeOpen: boolean;
+  onClick: (event: React.MouseEvent) => void;
+  className?: string;
+}) {
+  return isEyeOpen ? (
+    <Open onClick={onClick} className={clsx('cursor-pointer', className)} />
+  ) : (
+    <Close onClick={onClick} className={clsx('cursor-pointer', className)} />
   );
 }

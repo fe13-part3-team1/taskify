@@ -1,16 +1,7 @@
 import Link from 'next/link';
 import LoginForm from '@/app/(auth)/login/LoginForm';
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 
 export default async function Page() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken');
-
-  if (accessToken) {
-    redirect('/mydashboard');
-  }
-
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-medium18 text-black200 mb-9">오늘도 만나서 반가워요!</h2>

@@ -14,9 +14,18 @@ export async function POST(req: Request) {
 
   switch (status) {
     case 201: {
+      const userInfo = responseData.user;
       const accessToken = responseData.accessToken;
 
       const response = NextResponse.json({ success: true, data: responseData }, { status: 201 });
+
+      response.cookies.set('userInfo', JSON.stringify(userInfo), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        // maxAge: 60 * 60,
+      });
 
       response.cookies.set('accessToken', accessToken, {
         httpOnly: true,

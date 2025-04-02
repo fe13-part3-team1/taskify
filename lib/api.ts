@@ -26,7 +26,7 @@ export function createApi(
       data?: unknown;
       next?: NextFetchRequestConfig;
     } = {}
-  ): Promise<T> {
+  ): Promise<T & { status?: number }> {
     const { data, next, headers, ...restOptions } = options;
     const accessToken = await getAccessToken();
 
@@ -64,10 +64,10 @@ export function createApi(
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const json = await response.json();
-      return json as T;
+      return { ...json, status: response.status };
     }
 
-    return {} as T;
+    return { status: response.status } as T & { status?: number };
   }
 
   return {

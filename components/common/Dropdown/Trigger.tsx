@@ -14,7 +14,7 @@ interface SelectionTriggerProps extends TriggerProps {
 export function MenuTrigger({ onClick, isOpen }: TriggerProps) {
   return (
     <button
-      className={`hover:bg-gray200 size-5 cursor-pointer rounded-sm align-middle lg:size-7 ${isOpen && 'bg-gray200'}`}
+      className={`hover:bg-gray200 size-5 cursor-pointer rounded-sm lg:size-7 ${isOpen && 'bg-gray200'}`}
       onClick={onClick}
     >
       <KebabVertIcon width="28" height="28" />
@@ -25,7 +25,7 @@ export function MenuTrigger({ onClick, isOpen }: TriggerProps) {
 export function SelectionTrigger({ isOpen, onClick, selected }: SelectionTriggerProps) {
   return (
     <button
-      className={`hover:bg-gray200 border-gray300 flex min-h-12 w-full cursor-pointer items-center justify-between rounded border bg-white px-4 py-2 ${isOpen && 'border-violet'}`}
+      className={`hover:border-violet border-gray300 flex min-h-12 w-full cursor-pointer items-center justify-between rounded-md border bg-white px-4 py-2 ${isOpen && 'border-violet'}`}
       onClick={onClick}
     >
       {selected?.renderItem ? (

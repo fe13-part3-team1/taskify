@@ -19,7 +19,7 @@ export function SearchableInput({
 }: SearchableInputProps) {
   return (
     <button
-      className={`border-gray300 flex min-h-12 w-full items-center justify-between rounded border bg-white px-4 py-2 ${isOpen && 'border-violet'}`}
+      className={`border-gray300 flex min-h-12 w-full items-center justify-between rounded-md border bg-white px-4 py-2 ${isOpen && 'border-violet'}`}
     >
       <input
         type="text"
@@ -30,7 +30,7 @@ export function SearchableInput({
         className="placeholder:text-gray400 placeholder:text-regular16 w-full border-0 outline-0"
       />
       {value !== '' && (
-        <div className="hover:bg-gray200 rounded-sm" onClick={onClear}>
+        <div className="hover:border-violet rounded-sm" onClick={onClear}>
           <CloseIcon width="24" height="24" />
         </div>
       )}

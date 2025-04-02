@@ -1,5 +1,9 @@
-import { useState, useActionState, startTransition } from 'react';
+import { useState } from 'react';
 import signupAction from './action';
+import checkAllFormComplete from '@/utils/checkAllFormComplete';
+import { setItem } from '@/utils/localstorage';
+import login from './login';
+import { useRouter } from 'next/navigation';
 
 interface SignupType {
   email: string;
@@ -9,7 +13,15 @@ interface SignupType {
   isChecked: boolean;
 }
 
-const INITIAL = {
+interface SignupState {
+  status: boolean;
+  code?: string;
+  field?: string;
+  message: string;
+  credentials?: { email: string; password: string } | null;
+}
+
+const INITIAL_SIGNUP_FORM_VALUE = {
   email: '',
   nickname: '',
   password: '',
@@ -17,13 +29,23 @@ const INITIAL = {
   isChecked: false,
 };
 
+const SPACE_KEY = ' ';
+
 export default function useSignupForm() {
-  const [formData, setFormData] = useState<SignupType>(INITIAL);
+  const [formData, setFormData] = useState<SignupType>(INITIAL_SIGNUP_FORM_VALUE);
   const [isPasswordVisible, setIsPasswordVisible] = useState<Record<string, boolean>>({
     password: false,
     checkPassword: false,
   });
-  const [state, formAction, isPending] = useActionState(signupAction, null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [state, setState] = useState<SignupState>({
+    status: false,
+    code: '',
+    field: '',
+    message: '',
+  });
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,9 +63,8 @@ export default function useSignupForm() {
   };
 
   const handlePreventSpace = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ' ') {
-      e.preventDefault();
-    }
+    if (e.key !== SPACE_KEY) return;
+    e.preventDefault();
   };
 
   const toggleVisiblePassword = (name: string) => {
@@ -53,25 +74,50 @@ export default function useSignupForm() {
     }));
   };
 
-  const isFormIncomplete =
-    !formData.email ||
-    !formData.nickname ||
-    !formData.password ||
-    !formData.checkPassword ||
-    !formData.isChecked;
+  const isFormComplete = checkAllFormComplete({
+    email: formData.email,
+    nickname: formData.nickname,
+    password: formData.password,
+    checkPassword: formData.checkPassword,
+    isChecked: formData.isChecked,
+  });
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const fd = new FormData();
-    fd.append('email', formData.email);
-    fd.append('nickname', formData.nickname);
-    fd.append('password', formData.password);
-    fd.append('checkPassword', formData.checkPassword);
-
-    startTransition(() => {
-      formAction(fd);
+    Object.entries(formData).forEach(([key, value]) => {
+      fd.append(key, value);
     });
+
+    setIsPending(true);
+
+    const result = await signupAction(fd);
+    if (!result) return;
+    setState(result);
+
+    setIsPending(false);
+    if (result.code) {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = async () => {
+    const credentials = state?.credentials;
+    if (!credentials) return;
+    const res = await login(credentials);
+    if (!res.success) return;
+    router.push('/mydashboard');
+    setItem('userInfo', res.data.user);
+    setItem('accessToken', res.data.accessToken);
+  };
+
+  const onClose = () => {
+    if (state?.status === true) {
+      handleCloseModal();
+    } else {
+      setIsModalOpen(false);
+    }
   };
 
   return {
@@ -81,8 +127,10 @@ export default function useSignupForm() {
     handlePreventSpace,
     isPasswordVisible,
     toggleVisiblePassword,
-    isFormIncomplete,
+    isFormComplete,
     handleFormSubmit,
+    isModalOpen,
+    onClose,
     state,
     isPending,
   };

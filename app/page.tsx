@@ -1,3 +1,9 @@
+import GuestHeader from '@/components/layout/Header/GuestHeader';
+
 export default function Home() {
-  return <div>hello</div>;
+  return (
+    <>
+      <GuestHeader />
+    </>
+  );
 }

@@ -1,29 +1,20 @@
-export const COLOR_MAP = {
-  green: '#7ac555',
-  purple: '#760dde',
-  orange: '#ffa500',
-  blue: '#76a5ea',
-  pink: '#e876ea',
-} as const;
-
-export type ColorKey = keyof typeof COLOR_MAP;
+import clsx from 'clsx';
 
 interface Props {
-  colorKey: ColorKey;
+  color: string;
   size?: number;
+  className?: string;
 }
 
-export default function DashboardColorIcon({ colorKey, size = 8 }: Props) {
-  const resolvedColor = COLOR_MAP[colorKey];
-
+export default function DashboardColorIcon({ color, size = 8, className }: Props) {
   return (
     <div
-      className="shrink-0"
+      className={clsx('shrink-0', className)}
       style={{
         width: size,
         height: size,
         borderRadius: size,
-        backgroundColor: resolvedColor,
+        backgroundColor: color,
       }}
     />
   );

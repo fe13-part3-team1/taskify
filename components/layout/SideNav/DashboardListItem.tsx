@@ -1,34 +1,32 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import DashboardColorIcon, { ColorKey } from '../../DashboardColorIcon/DashboardColorIcon';
+import DashboardColorIcon from '../../DashboardColorIcon/DashboardColorIcon';
 import clsx from 'clsx';
+import { Dashboard } from '@/app/(dashboard)/mydashboard/types';
 
-interface DashboardListItemProps {
-  id: number;
-  title: string;
-  colorKey: ColorKey;
-  createdAt?: string;
-  updatedAt?: string;
-  createdByMe: boolean;
-  userId?: number;
+interface DashboardListItemProps extends Dashboard {
+  dashboardId: number;
   isSelected?: boolean;
 }
 
 export default function DashboardListItem({
-  id,
+  dashboardId,
   title,
-  colorKey,
+  color,
   createdByMe,
   isSelected,
 }: DashboardListItemProps) {
   return (
-    <li className={clsx('rounded-sm', isSelected && 'bg-violet8')}>
-      <Link href={`/dashboard/${id}`} className="flex h-[42px] items-center gap-4 px-3 py-2">
-        <DashboardColorIcon colorKey={colorKey} />
-        <div className="flex min-w-0 items-center gap-[6px]">
+    <li className={clsx('rounded-sm', isSelected ? 'bg-violet8' : 'hover:bg-gray100')}>
+      <Link
+        href={`/dashboard/${dashboardId}`}
+        className="flex h-[50px] items-center gap-4 px-3 py-2"
+      >
+        <DashboardColorIcon color={color} />
+        <div className="flex hidden min-w-0 items-center gap-[6px] md:flex">
           <span
             className={clsx(
-              'text-medium18 text-gray500 overflow-hidden text-ellipsis whitespace-nowrap',
+              'text-medium18 text-gray500 truncate',
               createdByMe ? 'max-w-[calc(100%-14px)]' : 'flex-1'
             )}
           >

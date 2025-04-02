@@ -1,9 +1,61 @@
-import Input from '@/components/common/Input';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Input from '@/components/common/Input';
 import InvitedDashboardList from './InvitedDashboardList';
 import { Invitation } from './invitations';
+import { acceptInvitation, rejectInvitation } from './data';
 
-export default function InvitedSection({ invitations }: { invitations: Invitation[] }) {
+interface Props {
+  invitations: Invitation[];
+}
+
+export default function InvitedSection({ invitations: initialInvitations }: Props) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [keyword, setKeyword] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    setInvitations(initialInvitations);
+  }, [initialInvitations]);
+
+  const filtered = invitations.filter((inv) =>
+    inv.dashboard.title.toLowerCase().includes(keyword.toLowerCase())
+  );
+
+  const handleAccept = async (id: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    try {
+      await acceptInvitation(id);
+      router.refresh();
+      setInvitations((prev) => prev.filter((inv) => inv.id !== id));
+    } catch (err) {
+      console.error('초대 수락 에러:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReject = async (id: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    try {
+      await rejectInvitation(id);
+      router.refresh();
+      setInvitations((prev) => prev.filter((inv) => inv.id !== id));
+    } catch (err) {
+      console.error('초대 거절 에러:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (invitations.length === 0) {
     return (
       <div className="relative h-[390px] rounded-2xl bg-white px-10 py-6">
@@ -24,6 +76,8 @@ export default function InvitedSection({ invitations }: { invitations: Invitatio
         <h3 className="text-bold24 text-black200">초대받은 대시보드</h3>
         <Input
           placeholder="검색"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
           size={16}
           customInputClass="h-6"
           customBorderClass="py-[7px]"
@@ -38,7 +92,12 @@ export default function InvitedSection({ invitations }: { invitations: Invitatio
           }
         />
       </div>
-      <InvitedDashboardList invitations={invitations} />
+      <InvitedDashboardList
+        isLoading={isLoading}
+        invitations={filtered}
+        onAccept={handleAccept}
+        onReject={handleReject}
+      />
     </div>
   );
 }

@@ -2,13 +2,16 @@ export default function CloseIcon({
   width = '24',
   height = '24',
   color = '#6B6B6B',
+  className,
 }: {
   width?: string;
   height?: string;
   color?: string;
+  className?: string;
 }) {
   return (
     <svg
+      className={className}
       width={width}
       height={height}
       viewBox="0 0 24 24"
