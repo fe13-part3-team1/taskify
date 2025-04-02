@@ -9,22 +9,29 @@ import PaginationItems from '@/components/Pagination/PaginationItems';
 import PaginationControls from '@/components/Pagination/PaginationControls';
 import MyDashboardListItem from './MyDashboardListItem';
 import CreateDashboardModal from './CreateDashboardModal';
+import { getMyDashboards } from './data';
 import { Dashboard } from './types';
+import { useEffect, useState } from 'react';
 
-interface Props {
-  mydashboards: Dashboard[];
-}
+export default function MyDashboardSection() {
+  const [myDashboards, setMyDashboards] = useState<Dashboard[]>([]);
 
-export default function MyDashboardSection({ mydashboards }: Props) {
   const pathname = usePathname();
   const { isOpen, open, close } = useModal();
   const selectedId = pathname?.split('/dashboard/')[1]?.split('/')[0];
 
+  useEffect(() => {
+    (async () => {
+      const data = await getMyDashboards();
+      setMyDashboards(data.dashboards);
+    })();
+  }, []);
+
   const itemsPerPage = 6;
 
-  const { currentPage, totalPages, goToPrev, goToNext } = usePagination(mydashboards, itemsPerPage);
+  const { currentPage, totalPages, goToPrev, goToNext } = usePagination(myDashboards, itemsPerPage);
 
-  if (mydashboards.length === 0) {
+  if (myDashboards.length === 0) {
     return (
       <div className="w-full md:w-[247px] lg:w-[332px]">
         <div className="mb-[114px] flex flex-col gap-3">
@@ -40,7 +47,7 @@ export default function MyDashboardSection({ mydashboards }: Props) {
   return (
     <div className="mb-[40px] flex flex-col gap-3">
       <PaginationItems
-        data={mydashboards}
+        data={myDashboards}
         itemsPerPage={itemsPerPage}
         currentPage={currentPage}
         wrapperClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  grid-rows-2 gap-[13px]"
