@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { useModal } from '@/hooks/useModal';
 import AddBoxIcon from '@/assets/icons/AddBoxIcon';
@@ -7,8 +8,8 @@ import Button from '@/components/common/Button';
 import { usePagination } from '@/components/Pagination/usePagination';
 import PaginationItems from '@/components/Pagination/PaginationItems';
 import PaginationControls from '@/components/Pagination/PaginationControls';
-import InviteModal from './InviteModal';
 import { Invitation } from '@/app/(dashboard)/mydashboard/types';
+import InviteModal from './InviteModal';
 import { cancelInvitation, getDashboardInvitations, inviteMember } from './data';
 
 export default function InvitationListSection({ dashboardId }: { dashboardId: number }) {
@@ -39,7 +40,7 @@ export default function InvitationListSection({ dashboardId }: { dashboardId: nu
 
   return (
     <div id="section" className="rounded-2xl bg-white py-[32px]">
-      <div className="mb-[14px] md:mb-[32px] flex items-center justify-between px-[28px]">
+      <div className="mb-[14px] flex items-center justify-between px-[28px] md:mb-[32px]">
         <h3 className="text-bold20 md:text-bold24">초대 내역</h3>
         <div className="flex items-center gap-4">
           <PaginationControls
@@ -56,29 +57,41 @@ export default function InvitationListSection({ dashboardId }: { dashboardId: nu
       </div>
 
       <div className="w-full rounded-lg">
-        <h4 className="text-gray400 text-regular14 md:text-regular16 px-[28px]">이메일</h4>
-
-        <PaginationItems
-          data={invitations}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
-          renderItems={(pageItems) => (
-            <>
-              {pageItems.map((item) => (
-                <div key={item.id} className="border-gray200 border-b">
-                  <div className="flex justify-between px-[28px] py-[16px]">
-                    <div className="flex items-center gap-[12px]">
-                      <span>{item.invitee.email}</span>
+        {invitations.length === 0 ? (
+          <div className="relative h-[190px] rounded-2xl bg-white">
+            <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-[30px]">
+              <div className="relative h-[75px] w-[87px]">
+                <Image src="/invite.svg" fill alt="초대 없음 이미지" />
+              </div>
+              <p className="text-gray400 text-regular18">초대 내역이 없습니다.</p>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h4 className="text-gray400 text-regular14 md:text-regular16 px-[28px]">이메일</h4>
+            <PaginationItems
+              data={invitations}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              renderItems={(pageItems) => (
+                <>
+                  {pageItems.map((item) => (
+                    <div key={item.id} className="border-gray200 border-b">
+                      <div className="flex justify-between px-[28px] py-[16px]">
+                        <div className="flex items-center gap-[12px]">
+                          <span>{item.invitee.email}</span>
+                        </div>
+                        <Button variant="ghost" size="delete" onClick={() => handleCancel(item.id)}>
+                          취소
+                        </Button>
+                      </div>
                     </div>
-                    <Button variant="ghost" size="delete" onClick={() => handleCancel(item.id)}>
-                      취소
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
-        />
+                  ))}
+                </>
+              )}
+            />
+          </div>
+        )}
       </div>
 
       <InviteModal

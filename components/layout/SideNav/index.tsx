@@ -29,7 +29,7 @@ export default function SideNav() {
   }, []);
 
   return (
-    <nav className="border-r-gray300 h-screen w-[67px] border-r md:w-[160px] lg:w-[300px]">
+    <nav className="ease-in-outborder-r-gray300 h-screen w-[67px] border-r transition-all duration-100 md:w-[160px] lg:w-[300px]">
       <div id="sideNavWrapper" className="flex h-full flex-col gap-14 pt-5 pr-3 pb-[96px] pl-2">
         <h2 id="sideNavHeader">
           <Link href={ROUTES.HOME}>
