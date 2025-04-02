@@ -36,7 +36,7 @@ export default function PaginationItems<T>({
 
 // const itemsPerPage = ; // 페이지에 렌더할 아이템 수
 
-// const { currentPage, totalPages, goToPrev, goToNext } = usePagination(paginatedData, itemsPerPage);
+// const { currentPage, totalPages, goToPrev, goToNext } = usePagination(paginatedData, itemsPerPage, true); // 마지막 인자: 첫 번째 요소가 있을 경우 true, 없으면 false
 
 // return (
 //   <>
@@ -45,7 +45,7 @@ export default function PaginationItems<T>({
 //       totalPages={totalPages}
 //       goToPrev={goToPrev}
 //       goToNext={goToNext}
-//       // ptional: showPageInfo, justify 등
+//       // optional: showPageInfo, justify 등
 //     />
 
 //     <PaginationItems

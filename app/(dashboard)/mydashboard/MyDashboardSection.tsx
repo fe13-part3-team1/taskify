@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useModal } from '@/hooks/useModal';
 import { usePagination } from '@/components/Pagination/usePagination';
 import Button from '@/components/common/Button';
@@ -11,11 +12,9 @@ import MyDashboardListItem from './MyDashboardListItem';
 import CreateDashboardModal from './CreateDashboardModal';
 import { getMyDashboards } from './data';
 import { Dashboard } from './types';
-import { useEffect, useState } from 'react';
 
 export default function MyDashboardSection() {
   const [myDashboards, setMyDashboards] = useState<Dashboard[]>([]);
-
   const pathname = usePathname();
   const { isOpen, open, close } = useModal();
   const selectedId = pathname?.split('/dashboard/')[1]?.split('/')[0];
@@ -29,7 +28,11 @@ export default function MyDashboardSection() {
 
   const itemsPerPage = 6;
 
-  const { currentPage, totalPages, goToPrev, goToNext } = usePagination(myDashboards, itemsPerPage);
+  const { currentPage, totalPages, goToPrev, goToNext } = usePagination(
+    myDashboards,
+    itemsPerPage,
+    true
+  );
 
   if (myDashboards.length === 0) {
     return (
