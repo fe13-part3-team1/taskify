@@ -21,15 +21,16 @@ export default function ColumnSettingList({ columnId, columnTitle }: ColumnType)
   const { isOpen, open, close } = useModal();
 
   const dropdownRef = useRef(null);
-  const closeDropdown = () => {
-    setOpenColumnId(null);
-  };
 
-  useClickOutside(dropdownRef, closeDropdown);
+  useClickOutside(dropdownRef, () => {
+    if (!isOpen) {
+      setOpenColumnId(null);
+    }
+  });
 
   const handleSelectOpenModal = (option: DropdownItem) => {
+    setOpenColumnId(columnId);
     setModalId(String(option.id));
-    setOpenColumnId(null);
     open();
   };
 
@@ -49,6 +50,7 @@ export default function ColumnSettingList({ columnId, columnTitle }: ColumnType)
         onClose={close}
         columnId={openColumnId ?? 0}
         columnTitle={columnTitle}
+        option="update"
       />
       <Setting width={24} height={24} onClick={toggleDropdown} />
       {openColumnId === columnId && (

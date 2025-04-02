@@ -16,6 +16,7 @@ const COLUMN_NAME_ERROR_MESSAGE = {
 interface ColumnManagementProps extends ModalProps {
   columnId?: number;
   columnTitle?: string;
+  option: 'create' | 'update';
 }
 
 export default function ColumnManagementModal({
@@ -23,6 +24,7 @@ export default function ColumnManagementModal({
   onClose,
   columnId,
   columnTitle,
+  option,
 }: ColumnManagementProps) {
   const [columnName, setColumnName] = useState(columnTitle ?? '');
   const [dashboardColumns, setDashboardColumns] = useState<ColumnsType[]>([]);
@@ -33,7 +35,8 @@ export default function ColumnManagementModal({
   const isCheckedSameColumnName = dashboardColumns.some((column) => column.title === columnName);
   const isMaxColumnList = dashboardColumns.length === 10;
   const isEqualTitle = columnTitle === columnName;
-  const createOrUpdate = columnId ? '변경' : '생성';
+  const updateOption = option === 'update';
+  const createOrUpdate = updateOption ? '변경' : '생성';
 
   useEffect(() => {
     const getColumn = async () => {
@@ -45,21 +48,25 @@ export default function ColumnManagementModal({
 
   const handleColumnSubmit = async () => {
     if (!columnName.trim()) return;
-    if (columnId && isEqualTitle)
+    if (updateOption && isEqualTitle)
       return setColumnErrorMessage(COLUMN_NAME_ERROR_MESSAGE.EQUAL_TITLE);
     if (isCheckedSameColumnName)
       return setColumnErrorMessage(COLUMN_NAME_ERROR_MESSAGE.ALREADY_EXISTS);
-    if (!columnId && isMaxColumnList)
+    if (!updateOption && isMaxColumnList)
       return setColumnErrorMessage(COLUMN_NAME_ERROR_MESSAGE.MAX_COLUMNS_REACHED);
 
     try {
-      await api[columnId ? 'put' : 'post'](
-        `${EXTERNAL_API.COLUMNS.ROOT}${columnId ? `/${columnId}` : ''}`,
-        {
+      if (updateOption) {
+        await api.put(`${EXTERNAL_API.COLUMNS.ROOT}/${columnId}`, {
           title: columnName,
-          ...(!columnId && { dashboardId }),
-        }
-      );
+        });
+      } else {
+        await api.post(EXTERNAL_API.COLUMNS.ROOT, {
+          title: columnName,
+          dashboardId,
+        });
+      }
+
       onClose();
       window.location.reload();
     } catch (err) {

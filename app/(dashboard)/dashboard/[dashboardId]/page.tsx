@@ -10,14 +10,22 @@ export default async function DashboardId({
   const dashboardId = (await params).dashboardId;
 
   const columns = await getDashboardColumn(Number(dashboardId));
-  if (!columns) return;
+
+  if (!columns || columns.length === 0)
+    return (
+      <div className="flex h-full flex-col">
+        <div className="mx-5 mt-[68px]">
+          <AddColumnBtn />
+        </div>
+      </div>
+    );
 
   return (
-    <div className="flex h-full flex-col overflow-x-scroll lg:flex-row">
+    <div className="flex h-full flex-col overflow-x-scroll pb-24 lg:flex-row lg:pb-0">
       {columns.map((column) => (
         <DashboardColumn key={column.id} columnTitle={column.title} columnId={column.id} />
       ))}
-      <div className="fixed inset-x-3 bottom-7 lg:static lg:mx-5 lg:mt-[68px]">
+      <div className="fixed right-7 bottom-7 lg:static lg:mx-5 lg:mt-[68px]">
         <AddColumnBtn />
       </div>
     </div>

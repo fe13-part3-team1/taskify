@@ -10,10 +10,10 @@ export default function AddColumnBtn() {
 
   return (
     <>
-      <ColumnManagementModal isOpen={isOpen} onClose={close} />
+      <ColumnManagementModal isOpen={isOpen} onClose={close} option="create" />
       <Button size="addColumn" variant="outline" onClick={open}>
         <div className="text-bold18 text-black200 flex gap-3">
-          새로운 칼럼 추가하기
+          <span className="hidden sm:block">새로운 칼럼 추가하기</span>
           <Plus />
         </div>
       </Button>

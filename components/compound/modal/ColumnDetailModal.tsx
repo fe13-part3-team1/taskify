@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+'use client';
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/common/Modal';
 import CloseIcon from '@/assets/icons/CloseIcon';
 import Image from 'next/image';
@@ -18,6 +20,7 @@ import ToDoFormModal from '@/components/ToDoFormModal/ToDoFormModal';
 import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
 import Comment from '@/components/Comment/Comment';
+import { formatDate } from '@/utils/formatDateTime';
 
 interface ColumnDetailModalProps {
   isOpen: boolean;
@@ -25,6 +28,7 @@ interface ColumnDetailModalProps {
   cardData: CardType;
   defaultImage: boolean;
   columnTitle: string;
+  getCards: (id?: number) => void;
   onFetchNextComments?: () => Promise<void>;
   hasNextPage?: boolean;
   isLoadingComments?: boolean;
@@ -37,6 +41,7 @@ const ColumnDetailModal = ({
   cardData,
   defaultImage = false,
   columnTitle,
+  getCards,
   onFetchNextComments,
   hasNextPage = false,
   // isLoadingComments = false,
@@ -61,15 +66,20 @@ const ColumnDetailModal = ({
     threshold,
   });
 
-  useEffect(() => {
-    const getComment = async () => {
+  const getComments = useCallback(async () => {
+    try {
       const response = await api.get<CommentPromise>(
         `${EXTERNAL_API.COMMENTS.ROOT}?cardId=${cardData.id}`
       );
       setComments(response.comments);
-    };
-    getComment();
+    } catch (error) {
+      console.error('댓글을 불러오는 데 실패했습니다:', error);
+    }
   }, [cardData.id]);
+
+  useEffect(() => {
+    getComments();
+  }, [getComments]);
 
   const onCommentSubmit = async () => {
     await api.post(`${EXTERNAL_API.COMMENTS.ROOT}`, {
@@ -86,6 +96,7 @@ const ColumnDetailModal = ({
     setIsSubmitting(true);
     try {
       await onCommentSubmit();
+      getComments();
       setCommentText('');
     } catch (error) {
       console.error('Failed to submit comment:', error);
@@ -97,6 +108,7 @@ const ColumnDetailModal = ({
   const handleCardDelete = async () => {
     try {
       await api.delete(`${EXTERNAL_API.CARDS.ROOT}/${cardData.id}`);
+      getCards();
     } catch (err) {
       console.error(err);
     }
@@ -129,7 +141,6 @@ const ColumnDetailModal = ({
                 open();
               } else if (option.id === 2) {
                 handleCardDelete();
-                window.location.reload();
               }
             }}
           />
@@ -153,15 +164,13 @@ const ColumnDetailModal = ({
         </div>
         <div className="flex w-[109px] flex-col gap-2 md:gap-[6px]">
           <h3 className="text-semi12">마감일</h3>
-          <p className="text-regular12 text-black200">
-            {cardData.dueDate.split('T')[0]} {cardData.dueDate.split('T')[1]}
-          </p>
+          <p className="text-regular12 text-black200">{formatDate(cardData.dueDate, true)}</p>
         </div>
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-1">
           <ColumnName columnName={columnTitle} />
-          <div className="h-4 w-[1px] bg-gray-200" />
+          <div className="mx-2 h-5 w-[1px] bg-gray-200" />
           {tags.map((tag) => (
             <Tag key={tag.text} tag={tag.text} color={tag.color} readonly />
           ))}
@@ -205,7 +214,9 @@ const ColumnDetailModal = ({
 
   const renderComments = () => (
     <>
-      {comments?.map((comment) => <Comment key={comment.id} comment={comment} />)}
+      {comments?.map((comment) => (
+        <Comment key={comment.id} comment={comment} getComments={getComments} />
+      ))}
       {/* {renderCommentsPagination()} */}
     </>
   );
@@ -232,6 +243,7 @@ const ColumnDetailModal = ({
         onClose={close}
         columnId={cardData.columnId}
         card={cardData}
+        getCards={getCards}
       />
       <Modal isOpen={isOpen} onClose={onClose} padding="32/24" borderRadius="8" ref={modalRef}>
         <div className="flex w-full flex-col gap-2 md:gap-6">

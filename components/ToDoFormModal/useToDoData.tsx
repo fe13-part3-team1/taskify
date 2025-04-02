@@ -26,6 +26,7 @@ export default function useToDoData(
   columnId: number,
   dashboardId: number,
   onClose: () => void,
+  getCards: (id?: number) => void,
   card?: CardType
 ) {
   const [toDoData, setToDoData] = useState<ToDoData>(INITIAL_TO_DO_VALUE);
@@ -108,15 +109,20 @@ export default function useToDoData(
       const url: string = card
         ? `${EXTERNAL_API.CARDS.ROOT}/${card.id}`
         : `${EXTERNAL_API.CARDS.ROOT}`;
-      const method = card ? api.put : api.post;
+      const method = card ? api.put<{ columnId: number }> : api.post;
 
       await method(url, {
         ...data,
         tags,
         imageUrl: toDoData.imageUrl ?? DEFAULT_CARD_IMAGE,
       });
+
       onClose();
-      window.location.reload();
+      if (!card) {
+        await getCards();
+      } else {
+        window.location.reload();
+      }
     } catch (err) {
       console.error(err);
     }

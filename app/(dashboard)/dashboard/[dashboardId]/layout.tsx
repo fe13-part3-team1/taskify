@@ -12,7 +12,7 @@ export default async function Layout({
   return (
     <>
       <DashboardHeader dashboardId={Number(dashboardId)} />
-      <main>{children}</main>
+      <main className="h-[calc(100vh-70px)]">{children}</main>
     </>
   );
 }

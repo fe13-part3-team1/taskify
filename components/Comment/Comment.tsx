@@ -6,35 +6,49 @@ import Button from '../common/Button';
 import { useState } from 'react';
 import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
+import { formatISODateTime } from '@/utils/formatDateTime';
 
 interface Comment {
   comment: CommentsType;
+  getComments: () => void;
 }
 
 interface UserInfo {
-  createdAt: string;
   email: string;
   id: number;
   nickname: string;
   profileImageUrl: string;
+  createdAt: string;
   updatedAt: string;
 }
 
-export default function Comment({ comment }: Comment) {
+export default function Comment({ comment, getComments }: Comment) {
   const [isEdit, setIsEdit] = useState(false);
   const [editComment, setEditComment] = useState(comment.content);
   const user = getItem<UserInfo>('userInfo');
   const userId = user?.id;
 
+  const isUpdateAt = comment.updatedAt
+    ? formatISODateTime(comment.updatedAt)
+    : formatISODateTime(comment.createdAt);
+
   const handleCommentUpdate = async () => {
-    await api.put(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`, {
-      content: editComment,
-    });
-    setIsEdit(false);
+    try {
+      await api.put(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`, { content: editComment });
+      setIsEdit(false);
+      getComments();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleCommentDelete = async () => {
-    await api.delete(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`);
+    try {
+      await api.delete(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`);
+      getComments();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -44,7 +58,7 @@ export default function Comment({ comment }: Comment) {
         <div className="w-full">
           <div className="flex items-center gap-2">
             <p className="text-semi14 text-black200">{comment.author.nickname}</p>
-            <p className="text-regular12 text-gray400">{comment.createdAt}</p>
+            <p className="text-regular12 text-gray400">{isUpdateAt}</p>
           </div>
           {!isEdit ? (
             <p className="text-regular14 text-black200">{comment.content}</p>
