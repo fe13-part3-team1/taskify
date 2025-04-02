@@ -3,7 +3,7 @@
 @layer {
   body {
     font-family: 'Pretendard', sans-serif;
-    
+
     button {
       cursor: pointer;
     }
@@ -33,6 +33,14 @@
   --color-black100: #4b4b4b;
   --color-black200: #333236;
   --color-black300: #171717;
+}
+
+@utility text-bold40 {
+  @layer components {
+    font-size: 40px;
+    line-height: 42px;
+    font-weight: 700;
+  }
 }
 
 @utility text-bold32 {

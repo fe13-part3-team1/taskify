@@ -20,6 +20,7 @@ export default function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const hasEmailClickedRef = useRef<boolean>(false);
   const hasPasswordClickedRef = useRef<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
@@ -37,6 +38,9 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+
+    setIsLoading(true);
 
     const res = await fetch('/api/auth/login', {
       method: 'POST',
@@ -47,6 +51,8 @@ export default function LoginForm() {
     });
 
     const result = await res.json();
+
+    setIsLoading(false);
 
     if (result.success) {
       router.push('/mydashboard');
@@ -68,6 +74,7 @@ export default function LoginForm() {
             fieldType="input"
             label="이메일"
             type="email"
+            placeholder="이메일을 입력해 주세요"
             errorMessage="이메일 형식으로 작성해 주세요."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -80,6 +87,7 @@ export default function LoginForm() {
             fieldType="input"
             label="비밀번호"
             type={isPasswordVisible ? 'text' : 'password'}
+            placeholder="비밀번호를 입력해 주세요"
             errorMessage="8자 이상 작성해 주세요."
             value={password}
             onChange={(e) => setPassword(e.target.value)}

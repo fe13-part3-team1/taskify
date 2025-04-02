@@ -45,3 +45,30 @@ export async function rejectInvitation(id: number): Promise<Invitation> {
     throw err;
   }
 }
+
+interface GetInvitationsParams {
+  size?: number;
+  cursorId?: number;
+  title?: string;
+}
+
+export async function getInvitationsList({
+  size = 3,
+  cursorId,
+  title,
+}: GetInvitationsParams): Promise<InvitationListResponse> {
+  const params = new URLSearchParams();
+
+  if (size) params.append('size', String(size));
+  if (cursorId) params.append('cursorId', String(cursorId));
+  if (title) params.append('title', title);
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+
+  try {
+    return await api.get<InvitationListResponse>(`${EXTERNAL_API.INVITATIONS.ROOT}${query}`);
+  } catch (err) {
+    console.error('초대 목록 가져오기 실패:', err);
+    throw err;
+  }
+}

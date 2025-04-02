@@ -2,9 +2,9 @@ import { useState, useMemo, useEffect } from 'react';
 
 export function usePagination<T>(data: T[] = [], itemsPerPage: number) {
   const [currentPage, setCurrentPage] = useState(1);
-
+  
   const totalPages = useMemo(() => {
-    return Math.ceil(data.length / itemsPerPage);
+    return Math.max(1, Math.ceil(data.length / itemsPerPage));
   }, [data.length, itemsPerPage]);
 
   const goToPrev = () => {

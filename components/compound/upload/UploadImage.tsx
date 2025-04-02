@@ -11,7 +11,8 @@ interface UploadImageProps {
 const UploadImage = ({ image, onChange, id }: UploadImageProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const triggerFileInput = () => {
+  const triggerFileInput = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     inputRef.current?.click();
   };
 

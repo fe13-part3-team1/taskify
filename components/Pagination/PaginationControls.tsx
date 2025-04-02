@@ -18,7 +18,7 @@ export default function PaginationControls({
   }[justify];
 
   const baseButtonClass =
-    'border-gray300 flex h-10 w-10 items-center justify-center border bg-white';
+    'border-gray300 flex h-9 w-9 md:h-10 md:w-10 items-center justify-center border bg-white';
 
   const getArrowColor = (disabled: boolean) => (disabled ? '#D9D9D9' : '#787486');
 

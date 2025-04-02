@@ -45,7 +45,7 @@ export default async function DashboardHeader({ dashboardId }: { dashboardId: nu
 
   return (
     <header className="border-b-gray300 sticky top-0 z-990 flex h-15 items-center justify-between border-b-1 bg-white px-3 md:h-17.5 md:px-10 lg:pr-20 lg:pl-10">
-      <div className="invisible lg:visible lg:flex lg:gap-2">
+      <div className="invisible w-0 lg:visible lg:flex lg:w-fit lg:gap-2">
         <span className="text-bold20 select-none">{title}</span>
         {createdByMe && (
           <Image src="/icons/crown.svg" width={20} height={16} alt="내가 만든 대시보드" />

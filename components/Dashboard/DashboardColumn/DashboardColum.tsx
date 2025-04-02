@@ -14,7 +14,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CardType } from '../DashboardCard/DashboardCard';
 import SortableCard from '../DashboardCard/SortableCard';
 import { cardOrdersTable } from './db';
@@ -27,20 +27,19 @@ export default function DashboardColumn({ columnId, columnTitle }: ColumnType) {
     const getCards = async () => {
       try {
         const dbOrder = await cardOrdersTable.get(columnId);
+        const data = await getDashboardCard(columnId);
 
         if (dbOrder) {
-          const data = await getDashboardCard(columnId);
           const orderedCards = dbOrder.order
             .map((id: number) => data.cards.find((card) => card.id === id))
             .filter(Boolean) as CardType[];
 
           setCards(orderedCards);
-          setTotalCounts(data.totalCount);
         } else {
-          const data = await getDashboardCard(columnId);
           setCards(data.cards);
-          setTotalCounts(data.totalCount);
         }
+
+        setTotalCounts(data.totalCount);
       } catch (err) {
         console.error(err);
       }
@@ -49,16 +48,18 @@ export default function DashboardColumn({ columnId, columnTitle }: ColumnType) {
     getCards();
   }, [columnId]);
 
+  const memoizedCards = useMemo(() => cards, [cards]);
+
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = cards.findIndex((card) => card.id === active.id);
-    const newIndex = cards.findIndex((card) => card.id === over.id);
+    const oldIndex = memoizedCards.findIndex((card) => card.id === active.id);
+    const newIndex = memoizedCards.findIndex((card) => card.id === over.id);
 
     if (oldIndex === -1 && newIndex === -1) return;
 
-    const newCardsOrder = arrayMove(cards, oldIndex, newIndex);
+    const newCardsOrder = arrayMove(memoizedCards, oldIndex, newIndex);
     setCards(newCardsOrder);
 
     await cardOrdersTable.put({ columnId, order: newCardsOrder.map((c) => c.id) });

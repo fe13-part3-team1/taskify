@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import Input from '@/components/common/Input';
+import { useRouter } from 'next/navigation';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+// import { getInvitations } from '@/api/invitation';
+// import { acceptInvitation, rejectInvitation } from '@/api/actions';
 import InvitedDashboardList from './InvitedDashboardList';
-import { Invitation } from './invitations';
-import { acceptInvitation, rejectInvitation } from './data';
+import Input from '@/components/common/Input';
+import { Invitation } from './types';
+import { acceptInvitation, getInvitationsList, rejectInvitation } from './data';
+// import { Invitation } from '@/types';
 
 interface Props {
   invitations: Invitation[];
@@ -16,15 +20,51 @@ export default function InvitedSection({ invitations: initialInvitations }: Prop
   const [isLoading, setIsLoading] = useState(false);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [keyword, setKeyword] = useState('');
+  const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     setInvitations(initialInvitations);
+    if (initialInvitations.length > 0) {
+      setCursorId(initialInvitations[initialInvitations.length - 1].id);
+    } else {
+      setHasNextPage(false);
+    }
   }, [initialInvitations]);
 
-  const filtered = invitations.filter((inv) =>
-    inv.dashboard.title.toLowerCase().includes(keyword.toLowerCase())
-  );
+  const fetchNextPage = useCallback(async () => {
+    if (!hasNextPage || isLoading) return;
+    setIsLoading(true);
+    try {
+      const res = await getInvitationsList({ size: 3, cursorId });
+      const newInvitations = res.invitations;
+
+      if (newInvitations.length === 0) {
+        setHasNextPage(false);
+        return;
+      }
+
+      const unique = newInvitations.filter(
+        (inv) => !invitations.some((existing) => existing.id === inv.id)
+      );
+
+      setInvitations((prev) => [...prev, ...unique]);
+      setCursorId(newInvitations[newInvitations.length - 1].id);
+    } catch (err) {
+      console.error('추가 초대 가져오기 실패:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [cursorId, hasNextPage, isLoading, invitations]);
+
+  useInfiniteScroll({
+    scrollRef,
+    fetchNextPage,
+    hasNextPage,
+    threshold: 150,
+  });
 
   const handleAccept = async (id: number) => {
     if (isLoading) return;
@@ -55,6 +95,10 @@ export default function InvitedSection({ invitations: initialInvitations }: Prop
       setIsLoading(false);
     }
   };
+
+  const filtered = invitations.filter((inv) =>
+    inv.dashboard.title.toLowerCase().includes(keyword.toLowerCase())
+  );
 
   if (invitations.length === 0) {
     return (
@@ -97,6 +141,7 @@ export default function InvitedSection({ invitations: initialInvitations }: Prop
         invitations={filtered}
         onAccept={handleAccept}
         onReject={handleReject}
+        scrollRef={scrollRef}
       />
     </div>
   );

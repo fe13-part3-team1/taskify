@@ -3,7 +3,7 @@ import KebabVertIcon from '@/assets/icons/KebabVertIcon';
 import { DropdownItem } from '@/components/common/Dropdown/types';
 
 interface TriggerProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClick: () => void;
 }
 
@@ -11,13 +11,18 @@ interface SelectionTriggerProps extends TriggerProps {
   selected: DropdownItem;
 }
 
-export function MenuTrigger({ onClick, isOpen }: TriggerProps) {
+export function MenuTrigger({ onClick }: TriggerProps) {
   return (
     <button
-      className={`hover:bg-gray200 size-5 cursor-pointer rounded-sm lg:size-7 ${isOpen && 'bg-gray200'}`}
+      className={`flex size-5 cursor-pointer items-center rounded-sm lg:size-7`}
       onClick={onClick}
     >
-      <KebabVertIcon width="28" height="28" />
+      <div className="block md:hidden">
+        <KebabVertIcon width="20" height="20" />
+      </div>
+      <div className="hidden md:block">
+        <KebabVertIcon width="28" height="28" />
+      </div>
     </button>
   );
 }

@@ -19,18 +19,16 @@ export default function MemberBadgeList({
   members: Member[];
   totalCount: number;
 }) {
-  // CSS만 사용해서 수치를 보여주기 위해, 변수를 따로 초기화했습니다.
   const restMemberCount = totalCount - 2;
   const restMemberCountLg = totalCount - 4;
 
   return (
     <ul className="ml-4 flex items-center md:ml-8 lg:ml-10">
-      {/* FIXME: 뱃지 반응형 크기 - mobile에서 size가 34 */}
-      {members.map(({ id }, idx) => {
+      {members.map(({ id, profileImageUrl }, idx) => {
         return (
           idx < 4 && (
             <li key={id} className={clsx(idx !== 0 && '-ml-3', idx > 1 && 'hidden lg:block')}>
-              <UserBadge size={38} />
+              <UserBadge size={38} profile={profileImageUrl} />
             </li>
           )
         );
