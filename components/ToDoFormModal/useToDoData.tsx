@@ -118,11 +118,7 @@ export default function useToDoData(
       });
 
       onClose();
-      if (!card) {
-        await getCards();
-      } else {
-        window.location.reload();
-      }
+      getCards();
     } catch (err) {
       console.error(err);
     }
