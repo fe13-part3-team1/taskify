@@ -12,7 +12,7 @@ export default function AddColumnBtn() {
     <>
       <ColumnManagementModal isOpen={isOpen} onClose={close} option="create" />
       <Button size="addColumn" variant="outline" onClick={open}>
-        <div className="text-bold18 text-black200 flex gap-3">
+        <div className="text-bold18 flex gap-3">
           <span className="hidden sm:block">새로운 칼럼 추가하기</span>
           <Plus />
         </div>

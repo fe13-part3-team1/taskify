@@ -66,6 +66,7 @@ export default function Modal({
               size={twoButton ? 'modal' : 'modalAlert'}
               onClick={onClose}
               fullWidth
+              className='text-gray500'
             >
               {cancelMessage}
             </Button>

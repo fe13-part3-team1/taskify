@@ -22,7 +22,7 @@ export default function CheckBox({ isChecked, handleIsChecked }: CheckBoxProps) 
         alt="check"
         className="absolute hidden peer-checked:block"
       />
-      <span className="text-regular16 text-black200 select-none">이용약관에 동의합니다.</span>
+      <span className="text-regular16 select-none">이용약관에 동의합니다.</span>
     </label>
   );
 }

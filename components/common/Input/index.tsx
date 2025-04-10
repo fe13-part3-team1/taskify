@@ -29,7 +29,7 @@ const Input = ({
     >
       {leftIcon && leftIcon}
       <input
-        className={`w-full border-none text-[var(--color-black200)] outline-none placeholder:text-[var(--color-gray400)] ${getFontSize(size)} ${customInputClass}`}
+        className={`w-full border-none outline-none placeholder:text-[var(--color-gray400)] ${getFontSize(size)} ${customInputClass}`}
         ref={ref}
         disabled={disabled}
         {...props}

@@ -14,7 +14,7 @@ interface DueDateProps {
 export default function DueDate({ onDueDateChange, dueDate }: DueDateProps) {
   return (
     <div className="flex flex-col">
-      <label className="text-medium18 text-black200 mb-2 flex items-center">마감일</label>
+      <label className="text-medium18 mb-2 flex items-center">마감일</label>
       <DatePicker
         locale="ko"
         className="w-full border-none outline-none"

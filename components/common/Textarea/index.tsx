@@ -23,7 +23,7 @@ const Textarea = ({
       className={`${getBorderClasses(disabled, isValid)} rounded-lg border px-4 py-3 ${customBorderClass}`}
     >
       <textarea
-        className={`${getFontSize(size)} text-black200 w-full resize-none border-none outline-none placeholder:${getFontSize(size)} placeholder:text-gray400 ${customTextareaClass}`}
+        className={`${getFontSize(size)} w-full resize-none border-none outline-none placeholder:${getFontSize(size)} placeholder:text-gray400 ${customTextareaClass}`}
         rows={rows}
         {...props}
       />

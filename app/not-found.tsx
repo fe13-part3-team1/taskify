@@ -11,7 +11,7 @@ export default function NotFound() {
             4<span className="text-violet-300">0</span>4
           </h1>
           <h2 className="text-violet -mt-10 mb-5 text-3xl font-bold">Not Found</h2>
-          <h3 className="text-black200 mb-7 text-5xl font-bold">
+          <h3 className="mb-7 text-5xl font-bold">
             페이지가 없거나 접근할 수 없어요
           </h3>
           <Link href="/">

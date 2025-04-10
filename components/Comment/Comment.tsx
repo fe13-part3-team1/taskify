@@ -57,11 +57,11 @@ export default function Comment({ comment, getComments }: Comment) {
         <UserBadge size={34} profile={comment.author.profileImageUrl} />
         <div className="w-full">
           <div className="flex items-center gap-2">
-            <p className="text-semi14 text-black200">{comment.author.nickname}</p>
+            <p className="text-semi14">{comment.author.nickname}</p>
             <p className="text-regular12 text-gray400">{isUpdateAt}</p>
           </div>
           {!isEdit ? (
-            <p className="text-regular14 text-black200">{comment.content}</p>
+            <p className="text-regular14">{comment.content}</p>
           ) : (
             <div className="relative">
               <Textarea

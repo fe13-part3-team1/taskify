@@ -15,7 +15,7 @@ const sizes = {
 
 const variants = {
   solid: 'bg-violet text-white disabled:bg-gray400',
-  outline: 'bg-white border border-gray300 text-gray500',
+  outline: 'bg-white border border-gray300',
   ghost: 'bg-white border border-gray300 text-violet',
 };
 

@@ -113,7 +113,7 @@ export default function LoginForm() {
         submitMessage="확인"
         onClose={() => setIsModalOpen(false)}
       >
-        <div className="text-black200 text-medium16 sm:text-medium20 flex w-full justify-center">
+        <div className="text-medium16 sm:text-medium20 flex w-full justify-center">
           {modalMessage}
         </div>
       </Modal>
