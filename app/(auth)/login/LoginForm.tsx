@@ -52,8 +52,6 @@ export default function LoginForm() {
 
     const result = await res.json();
 
-    setIsLoading(false);
-
     if (result.success) {
       router.push('/mydashboard');
       setItem('userInfo', result.data.user);
@@ -61,6 +59,7 @@ export default function LoginForm() {
     } else {
       setModalMessage(result.message);
       setIsModalOpen(true);
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +79,7 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             onBlur={handleEmailBlur}
             isValid={!hasEmailClickedRef.current || isEmailValid}
+            disabled={isLoading}
           />
           <FormField
             id="password"
@@ -99,9 +99,10 @@ export default function LoginForm() {
                 onClick={() => setIsPasswordVisible((prev) => !prev)}
               />
             }
+            disabled={isLoading}
           />
         </div>
-        <Button size="auth" fullWidth={true} type="submit" disabled={!canSubmit}>
+        <Button size="auth" fullWidth={true} type="submit" disabled={isLoading || !canSubmit}>
           로그인
         </Button>
       </form>
