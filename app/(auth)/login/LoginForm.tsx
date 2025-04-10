@@ -2,14 +2,14 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import clsx from 'clsx';
 import FormField from '@/components/compound/form/FormField';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import { validateEmail, validatePassword } from '@/utils/authValidate';
 import { setItem } from '@/utils/localstorage';
-import Open from '@/public/icons/openEye.svg';
-import Close from '@/public/icons/closeEye.svg';
+import ROUTES from '@/constants/routes';
+import PasswordToggle from '@/components/LoginForm/PasswordToggle';
+import { useToggle } from '@/hooks/useToggle';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordVisible, toggle] = useToggle(false);
   const hasEmailClickedRef = useRef<boolean>(false);
   const hasPasswordClickedRef = useRef<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +53,7 @@ export default function LoginForm() {
     const result = await res.json();
 
     if (result.success) {
-      router.push('/mydashboard');
+      router.push(ROUTES.MY_DASHBOARD);
       setItem('userInfo', result.data.user);
       setItem('accessToken', result.data.accessToken);
     } else {
@@ -93,12 +93,7 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             onBlur={handlePasswordBlur}
             isValid={!hasPasswordClickedRef.current || isPasswordValid}
-            rightIcon={
-              <PasswordToggle
-                isEyeOpen={!isPasswordVisible}
-                onClick={() => setIsPasswordVisible((prev) => !prev)}
-              />
-            }
+            rightIcon={<PasswordToggle isEyeOpen={!isPasswordVisible} onClick={() => toggle()} />}
             disabled={isLoading}
           />
         </div>
@@ -119,21 +114,5 @@ export default function LoginForm() {
         </div>
       </Modal>
     </>
-  );
-}
-
-function PasswordToggle({
-  isEyeOpen,
-  onClick,
-  className = '',
-}: {
-  isEyeOpen: boolean;
-  onClick: (event: React.MouseEvent) => void;
-  className?: string;
-}) {
-  return isEyeOpen ? (
-    <Open onClick={onClick} className={clsx('cursor-pointer', className)} />
-  ) : (
-    <Close onClick={onClick} className={clsx('cursor-pointer', className)} />
   );
 }
