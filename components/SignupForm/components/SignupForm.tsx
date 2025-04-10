@@ -1,10 +1,10 @@
 'use client';
 
 import CheckBox from './CheckBox';
-import FormField from '../compound/form/FormField';
-import Button from '../common/Button';
-import Modal from '../common/Modal';
-import useSignupForm from './useSignupForm';
+import FormField from '../../compound/form/FormField';
+import Button from '../../common/Button';
+import Modal from '../../common/Modal';
+import useSignupForm from '../utils/useSignupForm';
 import PasswordToggleBtn from './PasswordToggleBtn';
 
 const INPUT_FIELD_LIST = [

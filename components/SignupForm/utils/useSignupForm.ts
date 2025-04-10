@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import signupAction from './action';
 import checkAllFormComplete from '@/utils/checkAllFormComplete';
 import { setItem } from '@/utils/localstorage';
 import login from './login';
 import { useRouter } from 'next/navigation';
+import signupValidate from './signupValidate';
 
-interface SignupType {
+export interface SignupType {
   email: string;
   nickname: string;
   password: string;
@@ -13,8 +13,8 @@ interface SignupType {
   isChecked: boolean;
 }
 
-interface SignupState {
-  status: boolean;
+export interface ResponseState {
+  success: boolean;
   code?: string;
   field?: string;
   message: string;
@@ -38,8 +38,8 @@ export default function useSignupForm() {
     checkPassword: false,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [state, setState] = useState<SignupState>({
-    status: false,
+  const [state, setState] = useState<ResponseState>({
+    success: false,
     code: '',
     field: '',
     message: '',
@@ -85,35 +85,60 @@ export default function useSignupForm() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const fd = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      fd.append(key, value);
-    });
+    if (!isFormComplete) return;
+
+    const validation = signupValidate(formData);
+
+    if (validation) {
+      return setState(validation);
+    }
 
     setIsPending(true);
 
-    const result = await signupAction(fd);
-    if (!result) return;
-    setState(result);
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          nickname: formData.nickname,
+          password: formData.password,
+          passwordConfirmation: formData.checkPassword,
+        }),
+      });
 
-    setIsPending(false);
-    if (result.code) {
-      setIsModalOpen(true);
+      const result = await response.json();
+      const { code, success, field, message, credentials } = result;
+
+      setState({ success, field, message, credentials });
+
+      if (code) {
+        setIsModalOpen(true);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsPending(false);
     }
   };
 
   const handleCloseModal = async () => {
     const credentials = state?.credentials;
+
     if (!credentials) return;
     const res = await login(credentials);
+
     if (!res.success) return;
+
     router.push('/mydashboard');
     setItem('userInfo', res.data.user);
     setItem('accessToken', res.data.accessToken);
   };
 
   const onClose = () => {
-    if (state?.status === true) {
+    if (state?.success === true) {
       handleCloseModal();
     } else {
       setIsModalOpen(false);

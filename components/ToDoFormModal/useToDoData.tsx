@@ -117,6 +117,9 @@ export default function useToDoData(
         imageUrl: toDoData.imageUrl ?? DEFAULT_CARD_IMAGE,
       });
 
+      setToDoData(INITIAL_TO_DO_VALUE);
+      setTags([]);
+
       onClose();
       getCards();
     } catch (err) {

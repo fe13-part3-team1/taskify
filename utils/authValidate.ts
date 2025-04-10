@@ -13,6 +13,8 @@ export const validatePassword = (value: string) => {
   return PASSWORD_REGEX.test(value);
 };
 
+export const validatePasswordLength = (value: string) => value.length >= 8;
+
 export const validateEqualPassword = (password: string, checkPassword: string) => {
   return password === checkPassword;
 };

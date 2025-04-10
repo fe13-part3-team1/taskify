@@ -33,15 +33,15 @@ export default function Modal({
   if (!isOpen) return null;
 
   const handleSubmitClick = () => {
-    if (!onSubmit) return onClose();
-    onSubmit();
+    onSubmit?.();
+    onClose();
   };
 
   const twoButton = cancelMessage && submitMessage;
 
   return createPortal(
     <>
-      <div className="fixed top-0 left-0 z-[999] h-full w-full bg-black opacity-70" />
+      <div className="fixed top-0 left-0 z-[998] h-full w-full bg-black opacity-70" />
       <div
         className={clsx(
           'fixed top-1/2 left-1/2 z-[999] -translate-x-1/2 -translate-y-1/2 flex-col bg-white',
