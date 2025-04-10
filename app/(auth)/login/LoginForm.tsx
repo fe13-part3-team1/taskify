@@ -1,68 +1,32 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import clsx from 'clsx';
 import FormField from '@/components/compound/form/FormField';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
-import { validateEmail, validatePassword } from '@/utils/authValidate';
-import { setItem } from '@/utils/localstorage';
-import Open from '@/public/icons/openEye.svg';
-import Close from '@/public/icons/closeEye.svg';
+import PasswordToggle from '@/components/LoginForm/PasswordToggle';
+import useLoginForm from './useLoginForm';
 
 export default function LoginForm() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const hasEmailClickedRef = useRef<boolean>(false);
-  const hasPasswordClickedRef = useRef<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-
-  const canSubmit = isEmailValid && isPasswordValid;
-
-  const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    hasEmailClickedRef.current = true;
-    setIsEmailValid(validateEmail(e.target.value));
-  };
-
-  const handlePasswordBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    hasPasswordClickedRef.current = true;
-    setIsPasswordValid(validatePassword(e.target.value));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoading) return;
-
-    setIsLoading(true);
-
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const result = await res.json();
-
-    setIsLoading(false);
-
-    if (result.success) {
-      router.push('/mydashboard');
-      setItem('userInfo', result.data.user);
-      setItem('accessToken', result.data.accessToken);
-    } else {
-      setModalMessage(result.message);
-      setIsModalOpen(true);
-    }
-  };
+  const {
+    email,
+    password,
+    setEmail,
+    setPassword,
+    isEmailValid,
+    isPasswordValid,
+    handleEmailBlur,
+    handlePasswordBlur,
+    hasEmailClickedRef,
+    hasPasswordClickedRef,
+    isPasswordVisible,
+    toggle,
+    isLoading,
+    handleSubmit,
+    canSubmit,
+    isModalOpen,
+    setIsModalOpen,
+    modalMessage,
+  } = useLoginForm();
 
   return (
     <>
@@ -80,6 +44,7 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             onBlur={handleEmailBlur}
             isValid={!hasEmailClickedRef.current || isEmailValid}
+            disabled={isLoading}
           />
           <FormField
             id="password"
@@ -93,15 +58,11 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             onBlur={handlePasswordBlur}
             isValid={!hasPasswordClickedRef.current || isPasswordValid}
-            rightIcon={
-              <PasswordToggle
-                isEyeOpen={!isPasswordVisible}
-                onClick={() => setIsPasswordVisible((prev) => !prev)}
-              />
-            }
+            rightIcon={<PasswordToggle isEyeOpen={!isPasswordVisible} onClick={() => toggle()} />}
+            disabled={isLoading}
           />
         </div>
-        <Button size="auth" fullWidth={true} type="submit" disabled={!canSubmit}>
+        <Button size="auth" fullWidth={true} type="submit" disabled={isLoading || !canSubmit}>
           로그인
         </Button>
       </form>
@@ -118,21 +79,5 @@ export default function LoginForm() {
         </div>
       </Modal>
     </>
-  );
-}
-
-function PasswordToggle({
-  isEyeOpen,
-  onClick,
-  className = '',
-}: {
-  isEyeOpen: boolean;
-  onClick: (event: React.MouseEvent) => void;
-  className?: string;
-}) {
-  return isEyeOpen ? (
-    <Open onClick={onClick} className={clsx('cursor-pointer', className)} />
-  ) : (
-    <Close onClick={onClick} className={clsx('cursor-pointer', className)} />
   );
 }
