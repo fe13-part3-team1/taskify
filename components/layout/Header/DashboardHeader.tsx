@@ -2,9 +2,9 @@ import Image from 'next/image';
 import { cookies } from 'next/headers';
 import MemberBadgeList from '@/components/layout/Header/MemberBadgeList';
 import UserMenu from '@/components/layout/Header/UserMenu';
-import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
 import Navigation from './Navigation';
+import { apiServer } from '@/lib/apiServer';
 
 interface Member {
   id: number;
@@ -33,12 +33,15 @@ type DashboardDetailResponse = {
 };
 
 export default async function DashboardHeader({ dashboardId }: { dashboardId: number }) {
-  const { members, totalCount } = await api.get<MemberResponse>(
+  const { data: memberData } = await apiServer.get<MemberResponse>(
     `${EXTERNAL_API.MEMBERS.ROOT}?size=4&dashboardId=${dashboardId}`
   );
-  const { title, createdByMe } = await api.get<DashboardDetailResponse>(
+  const { data: dashboardData } = await apiServer.get<DashboardDetailResponse>(
     `${EXTERNAL_API.DASHBOARDS.getDetail(dashboardId)}`
   );
+
+  const { members, totalCount } = memberData;
+  const { title, createdByMe } = dashboardData;
 
   const cookieStore = await cookies();
   const { nickname, profileImageUrl } = JSON.parse(cookieStore.get('userInfo')?.value || '');

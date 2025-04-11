@@ -17,10 +17,10 @@ import ColumnName from '@/components/ColumnName/ColumnName';
 import { separateTagColor } from '@/utils/separateTagColor';
 import { useModal } from '@/hooks/useModal';
 import ToDoFormModal from '@/components/ToDoFormModal/ToDoFormModal';
-import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
 import Comment from '@/components/Comment/Comment';
 import { formatDate } from '@/utils/formatDateTime';
+import { apiClient } from '@/lib/apiClient';
 
 interface ColumnDetailModalProps {
   isOpen: boolean;
@@ -68,10 +68,10 @@ const ColumnDetailModal = ({
 
   const getComments = useCallback(async () => {
     try {
-      const response = await api.get<CommentPromise>(
+      const response = await apiClient.get<CommentPromise>(
         `${EXTERNAL_API.COMMENTS.ROOT}?cardId=${cardData.id}`
       );
-      setComments(response.comments);
+      setComments(response.data.comments);
     } catch (error) {
       console.error('댓글을 불러오는 데 실패했습니다:', error);
     }
@@ -82,7 +82,7 @@ const ColumnDetailModal = ({
   }, [getComments]);
 
   const onCommentSubmit = async () => {
-    await api.post(`${EXTERNAL_API.COMMENTS.ROOT}`, {
+    await apiClient.post(`${EXTERNAL_API.COMMENTS.ROOT}`, {
       content: commentText,
       columnId: cardData.columnId,
       cardId: cardData.id,
@@ -107,7 +107,7 @@ const ColumnDetailModal = ({
 
   const handleCardDelete = async () => {
     try {
-      await api.delete(`${EXTERNAL_API.CARDS.ROOT}/${cardData.id}`);
+      await apiClient.delete(`${EXTERNAL_API.CARDS.ROOT}/${cardData.id}`);
       getCards();
     } catch (err) {
       console.error(err);
