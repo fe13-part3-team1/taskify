@@ -24,6 +24,7 @@ export default function ChangePasswordForm() {
     isModalOpen,
     closeModal,
     modalMessage,
+    resetForm,
   } = useChangePasswordForm();
 
   return (
@@ -87,7 +88,10 @@ export default function ChangePasswordForm() {
         padding="64/40"
         borderRadius="16"
         submitMessage="확인"
-        onClose={closeModal}
+        onClose={() => {
+          closeModal();
+          resetForm();
+        }}
       >
         <div className="text-black200 text-medium16 sm:text-medium20 flex w-full justify-center">
           {modalMessage}

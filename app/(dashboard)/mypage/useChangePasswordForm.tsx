@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { validatePassword, validateEqualPassword } from '@/utils/authValidate';
 import { api } from '@/lib/api';
+import { useModal } from '@/hooks/useModal';
 
 type PasswordUpdateResponse = { message?: string };
 
@@ -19,7 +20,7 @@ export default function useChangePasswordForm() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen: isModalOpen, open: openModal, close: closeModal } = useModal();
   const [modalMessage, setModalMessage] = useState('');
 
   const canSubmit =
@@ -56,18 +57,17 @@ export default function useChangePasswordForm() {
     });
 
     if ('message' in res && res.message) {
-      setIsModalOpen(true);
+      openModal();
       setModalMessage(res.message);
     } else {
-      setIsModalOpen(true);
+      openModal();
       setModalMessage('비밀번호가 변경되었습니다.');
     }
 
     setIsLoading(false);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const resetForm = () => {
     setPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -92,5 +92,6 @@ export default function useChangePasswordForm() {
     isModalOpen,
     closeModal,
     modalMessage,
+    resetForm,
   };
 }
