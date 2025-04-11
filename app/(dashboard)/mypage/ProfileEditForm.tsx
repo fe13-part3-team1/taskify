@@ -28,6 +28,7 @@ export default function ProfileEditForm() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [nickname, setNickname] = useState(initialNickname);
   const [isNicknameValid, setIsNicknameValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const canSubmit = isNicknameValid && !(nickname === initialNickname && imageFile === null);
 
@@ -73,6 +74,7 @@ export default function ProfileEditForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     let uploadedImageUrl: string | null = null;
 
@@ -86,17 +88,21 @@ export default function ProfileEditForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nickname: nickname,
-        profileImageUrl: uploadedImageUrl,
+        profileImageUrl: uploadedImageUrl ?? initalProfileImageUrl,
       }),
     });
 
     const data = await response.json();
 
     if (!data.success) {
+      setIsLoading(false);
       return;
     }
 
+    setImageFile(null);
+    setImagePreview(data?.userInfo.profileImageUrl);
     setItem('userInfo', data?.userInfo);
+    setIsLoading(false);
     router.refresh();
   };
 
@@ -128,9 +134,10 @@ export default function ProfileEditForm() {
               onBlur={handleNicknameBlur}
               isValid={isNicknameValid}
               value={nickname}
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" size="auth" disabled={!canSubmit} fullWidth={true}>
+          <Button type="submit" size="auth" disabled={!canSubmit || isLoading} fullWidth={true}>
             저장
           </Button>
         </div>
