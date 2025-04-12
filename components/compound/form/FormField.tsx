@@ -20,7 +20,7 @@ const FormField = (props: FormFieldProps) => {
     <div className="flex flex-col gap-2">
       <label
         htmlFor={id}
-        className={`text-medium18 text-black200 flex items-center gap-[2px] ${customLabelClass}`}
+        className={`text-medium18 flex items-center gap-[2px] ${customLabelClass}`}
       >
         {label}
         {required && <span className="text-violet">*</span>}

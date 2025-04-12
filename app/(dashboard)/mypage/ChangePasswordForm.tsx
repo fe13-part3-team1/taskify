@@ -75,7 +75,7 @@ export default function ChangePasswordForm() {
   return (
     <>
       <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-4 md:p-6">
-        <h2 className="text-bold20 text-black200 md:text-bold24">비밀번호 변경</h2>
+        <h2 className="text-bold20 md:text-bold24">비밀번호 변경</h2>
         <div className="my-6 flex flex-col gap-4">
           <FormField
             id="password"
@@ -132,7 +132,7 @@ export default function ChangePasswordForm() {
         submitMessage="확인"
         onClose={closeModal}
       >
-        <div className="text-black200 text-medium16 sm:text-medium20 flex w-full justify-center">
+        <div className="text-medium16 sm:text-medium20 flex w-full justify-center">
           {modalMessage}
         </div>
       </Modal>
