@@ -53,12 +53,12 @@ export default function TagInput({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-medium18 text-black200 flex items-center">
+      <label className="text-medium18 flex items-center">
         태그
         <span className="text-gray400 text-regular12"> (더블 클릭 시 해당 태그는 삭제됩니다)</span>
       </label>
       <div
-        className={`text-black200 border-gray300 flex h-[52px] w-full items-center gap-2 rounded-lg border px-4 py-3 ${isEqual ? 'border-red hover:border-red focus-within:border-red' : 'hover:border-violet focus-within:border-violet'}`}
+        className={`border-gray300 flex h-[52px] w-full items-center gap-2 rounded-lg border px-4 py-3 ${isEqual ? 'border-red hover:border-red focus-within:border-red' : 'hover:border-violet focus-within:border-violet'}`}
       >
         {tags.map((t) => (
           <Tag

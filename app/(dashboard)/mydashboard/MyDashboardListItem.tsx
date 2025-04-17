@@ -33,7 +33,7 @@ export default function MyDashboardListItem({
         >
           <span
             className={clsx(
-              'text-black200 text-semi14 md:text-semi16 truncate',
+              'text-semi14 md:text-semi16 truncate',
               createdByMe ? 'max-w-[calc(100%-14px)]' : 'flex-1'
             )}
           >

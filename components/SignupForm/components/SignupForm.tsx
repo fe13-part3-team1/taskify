@@ -55,7 +55,7 @@ export default function SignupForm() {
         submitMessage="확인"
         onClose={onClose}
       >
-        <div className="text-black200 text-medium16 sm:text-medium20 flex w-full justify-center">
+        <div className="text-medium16 sm:text-medium20 flex w-full justify-center">
           {state?.message}
         </div>
       </Modal>
