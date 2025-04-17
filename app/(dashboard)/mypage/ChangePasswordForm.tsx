@@ -1,76 +1,31 @@
 'use client';
-import { useState, useRef } from 'react';
 import Button from '@/components/common/Button';
 import FormField from '@/components/compound/form/FormField';
-import { validatePassword, validateEqualPassword } from '@/utils/authValidate';
 import Modal from '@/components/common/Modal';
-import { api } from '@/lib/api';
-
-type PasswordUpdateResponse = { message?: string };
+import useChangePasswordForm from '@/app/(dashboard)/mypage/useChangePasswordForm';
 
 export default function ChangePasswordForm() {
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
-
-  const hasPasswordClickedRef = useRef<boolean>(false);
-  const hasNewPasswordClickedRef = useRef<boolean>(false);
-  const hasConfirmPasswordClickedRef = useRef<boolean>(false);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-
-  const canSubmit =
-    hasPasswordClickedRef.current &&
-    hasNewPasswordClickedRef.current &&
-    hasConfirmPasswordClickedRef.current &&
-    isPasswordValid &&
-    isNewPasswordValid &&
-    isConfirmPasswordValid;
-
-  const handlePasswordBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    hasPasswordClickedRef.current = true;
-    setIsPasswordValid(validatePassword(e.target.value));
-  };
-
-  const handleNewPasswordBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    hasNewPasswordClickedRef.current = true;
-    setIsNewPasswordValid(validatePassword(e.target.value));
-    setIsConfirmPasswordValid(validateEqualPassword(e.target.value, confirmPassword));
-  };
-
-  const handleConfirmPasswordBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    hasConfirmPasswordClickedRef.current = true;
-    setIsConfirmPasswordValid(validateEqualPassword(newPassword, e.target.value));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const res = await api.put<PasswordUpdateResponse>(`/auth/password`, {
-      password: password,
-      newPassword: newPassword,
-    });
-
-    if ('message' in res && res.message) {
-      setIsModalOpen(true);
-      setModalMessage(res.message);
-    } else {
-      setIsModalOpen(true);
-      setModalMessage('비밀번호가 변경되었습니다.');
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-  };
+  const {
+    password,
+    newPassword,
+    confirmPassword,
+    setPassword,
+    setNewPassword,
+    setConfirmPassword,
+    handlePasswordBlur,
+    handleNewPasswordBlur,
+    handleConfirmPasswordBlur,
+    isPasswordValid,
+    isNewPasswordValid,
+    isConfirmPasswordValid,
+    canSubmit,
+    handleSubmit,
+    isLoading,
+    isModalOpen,
+    closeModal,
+    modalMessage,
+    resetForm,
+  } = useChangePasswordForm();
 
   return (
     <>
@@ -90,6 +45,7 @@ export default function ChangePasswordForm() {
             onBlur={handlePasswordBlur}
             isValid={isPasswordValid}
             value={password}
+            disabled={isLoading}
           />
           <FormField
             id="newPassword"
@@ -104,6 +60,7 @@ export default function ChangePasswordForm() {
             onBlur={handleNewPasswordBlur}
             isValid={isNewPasswordValid}
             value={newPassword}
+            disabled={isLoading}
           />
           <FormField
             id="confirmPassword"
@@ -118,9 +75,10 @@ export default function ChangePasswordForm() {
             onBlur={handleConfirmPasswordBlur}
             isValid={isConfirmPasswordValid}
             value={confirmPassword}
+            disabled={isLoading}
           />
         </div>
-        <Button type="submit" size="auth" disabled={!canSubmit} fullWidth={true}>
+        <Button type="submit" size="auth" disabled={!canSubmit || isLoading} fullWidth={true}>
           변경
         </Button>
       </form>
@@ -130,7 +88,10 @@ export default function ChangePasswordForm() {
         padding="64/40"
         borderRadius="16"
         submitMessage="확인"
-        onClose={closeModal}
+        onClose={() => {
+          closeModal();
+          resetForm();
+        }}
       >
         <div className="text-medium16 sm:text-medium20 flex w-full justify-center">
           {modalMessage}
