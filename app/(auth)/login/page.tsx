@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import LoginForm from '@/app/(auth)/login/LoginForm';
+import ROUTES from '@/constants/routes';
 
 export default async function Page() {
   return (
@@ -8,7 +9,7 @@ export default async function Page() {
       <LoginForm />
       <div className="mt-6">
         <span className="mr-2">회원이 아니신가요?</span>
-        <Link href={`/signup`} className="text-violet underline">
+        <Link href={ROUTES.SIGNUP} className="text-violet underline">
           회원가입하기
         </Link>
       </div>
