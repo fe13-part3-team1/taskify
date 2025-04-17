@@ -92,7 +92,7 @@ export default function ColumnManagementModal({
       disabled={!hasColumnName}
     >
       <div className="flex w-full flex-col gap-6">
-        <h1 className="text-bold24 text-black200">새 컬럼 생성</h1>
+        <h1 className="text-bold24">새 컬럼 생성</h1>
         <FormField
           fieldType="input"
           label="이름"

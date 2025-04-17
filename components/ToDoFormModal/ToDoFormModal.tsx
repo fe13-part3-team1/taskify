@@ -120,11 +120,11 @@ export default function ToDoFormModal({
       disabled={!isFormComplete}
     >
       <div className="flex w-full flex-col gap-8">
-        <h1 className="text-bold24 text-black200">할 일 {createOrUpdate}</h1>
+        <h1 className="text-bold24">할 일 {createOrUpdate}</h1>
         <div className="flex flex-col gap-8 md:flex-row">
           {card?.id && (
             <div className="flex flex-1 flex-col gap-2">
-              <label className="text-black200 text-medium18">상태</label>
+              <label className="text-medium18">상태</label>
               <SelectionDropdown
                 options={columnList}
                 onSelect={(option: DropdownItem) => {
@@ -135,7 +135,7 @@ export default function ToDoFormModal({
             </div>
           )}
           <div className="flex flex-1 flex-col gap-2">
-            <label className="text-black200 text-medium18">담당자</label>
+            <label className="text-medium18">담당자</label>
             <SearchableDropdown
               options={memberList}
               onSelect={(option: DropdownItem) => {
@@ -170,7 +170,7 @@ export default function ToDoFormModal({
         />
         <TagInput writtenTags={card?.tags} onChange={(tags: string[]) => handleTagsChange(tags)} />
         <div className="flex flex-col gap-[5px]">
-          <label className="text-black200 text-medium18">이미지</label>
+          <label className="text-medium18">이미지</label>
           <div className="relative h-[58px] w-[58px] rounded-lg md:h-[76px] md:w-[76px]">
             <UploadImage
               image={image === DEFAULT_CARD_IMAGE ? '' : image}

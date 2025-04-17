@@ -30,7 +30,7 @@ export default function PaginationControls({
   return (
     <div className={`flex items-center gap-4 ${justifyClass}`}>
       {showPageInfo && (
-        <span className="text-black200 text-regular14">
+        <span className="text-regular14">
           {totalPages} 페이지 중 {currentPage}
         </span>
       )}
