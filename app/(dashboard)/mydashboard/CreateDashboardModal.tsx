@@ -7,7 +7,7 @@ import FormField from '@/components/compound/form/FormField';
 import ColorPalette from '@/components/Dashboard/ColorPalette';
 import EXTERNAL_API from '@/constants/api/external';
 import ROUTES from '@/constants/routes';
-import { api } from '@/lib/api';
+import { apiClient } from '@/lib/apiClient';
 
 interface Props {
   isOpen: boolean;
@@ -37,10 +37,12 @@ export default function CreateDashboardModal({ isOpen, onClose }: Props) {
     if (!canSubmit) return;
 
     try {
-      const response = await api.post<CreateDashboardResponse>(`${EXTERNAL_API.DASHBOARDS.ROOT}`, {
+      const res = await apiClient.post<CreateDashboardResponse>(`${EXTERNAL_API.DASHBOARDS.ROOT}`, {
         title,
         color: isColorSelected,
       });
+
+      const response = res.data;
 
       const dashboardId = response.id;
       router.push(ROUTES.DASHBOARD.root(dashboardId));

@@ -1,6 +1,6 @@
 'use server';
 
-import { api } from '@/lib/api';
+import { apiServer } from '@/lib/apiServer';
 
 export interface ColumnsType {
   id: number;
@@ -12,6 +12,6 @@ interface ColumnPromise {
 }
 
 export default async function getDashboardColumn(dashboardId: number) {
-  const response = await api.get<ColumnPromise>(`/columns?dashboardId=${dashboardId}`);
-  return response.data;
+  const response = await apiServer.get<ColumnPromise>(`/columns?dashboardId=${dashboardId}`);
+  return response.data.data;
 }

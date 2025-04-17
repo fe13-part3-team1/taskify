@@ -4,6 +4,7 @@ import { setItem } from '@/utils/localstorage';
 import login from './login';
 import { useRouter } from 'next/navigation';
 import signupValidate from './signupValidate';
+import { apiClient } from '@/lib/apiClient';
 
 export interface SignupType {
   email: string;
@@ -96,20 +97,14 @@ export default function useSignupForm() {
     setIsPending(true);
 
     try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          nickname: formData.nickname,
-          password: formData.password,
-          passwordConfirmation: formData.checkPassword,
-        }),
+      const response = await apiClient.post<ResponseState>('/api/users', {
+        email: formData.email,
+        nickname: formData.nickname,
+        password: formData.password,
+        passwordConfirmation: formData.checkPassword,
       });
 
-      const result = await response.json();
+      const result = response.data;
       const { code, success, field, message, credentials } = result;
 
       setState({ success, field, message, credentials });

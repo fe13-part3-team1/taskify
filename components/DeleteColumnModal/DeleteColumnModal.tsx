@@ -1,7 +1,7 @@
 import { ModalProps } from '@/types/modalProps';
 import EXTERNAL_API from '@/constants/api/external';
-import { api } from '@/lib/api';
 import Modal from '../common/Modal';
+import { apiClient } from '@/lib/apiClient';
 
 interface DeleteColumnProps extends ModalProps {
   columnId: number;
@@ -9,7 +9,7 @@ interface DeleteColumnProps extends ModalProps {
 
 export default function DeleteColumnModal({ isOpen, onClose, columnId }: DeleteColumnProps) {
   const handelColumnDelete = async () => {
-    await api.delete(`${EXTERNAL_API.COLUMNS.ROOT}/${columnId}`).then(() => onClose());
+    await apiClient.delete(`${EXTERNAL_API.COLUMNS.ROOT}/${columnId}`).then(() => onClose());
     window.location.reload();
   };
 

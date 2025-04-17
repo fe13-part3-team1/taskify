@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 import { DropdownItem } from '../common/Dropdown/types';
 import { postDashboardCardImage } from './action';
 import checkAllFormComplete from '@/utils/checkAllFormComplete';
@@ -7,6 +6,7 @@ import formatDateTime, { parseDateTime } from '@/utils/formatDateTime';
 import DEFAULT_CARD_IMAGE from '@/constants/image/defaultCardImage';
 import EXTERNAL_API from '@/constants/api/external';
 import { CardType } from '../Dashboard/DashboardCard/DashboardCard';
+import { apiClient } from '@/lib/apiClient';
 
 interface ToDoData {
   title: string;
@@ -109,7 +109,7 @@ export default function useToDoData(
       const url: string = card
         ? `${EXTERNAL_API.CARDS.ROOT}/${card.id}`
         : `${EXTERNAL_API.CARDS.ROOT}`;
-      const method = card ? api.put<{ columnId: number }> : api.post;
+      const method = card ? apiClient.put<{ columnId: number }> : apiClient.post;
 
       await method(url, {
         ...data,

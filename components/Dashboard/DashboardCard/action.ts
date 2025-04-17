@@ -1,7 +1,7 @@
 'use server';
 
-import { api } from '@/lib/api';
 import { CardType } from './DashboardCard';
+import { apiServer } from '@/lib/apiServer';
 
 interface CardsPromise {
   cards: CardType[];
@@ -9,6 +9,6 @@ interface CardsPromise {
 }
 
 export default async function getDashboardCard(id: number) {
-  const response = await api.get<CardsPromise>(`/cards?columnId=${id}`);
-  return response;
+  const response = await apiServer.get<CardsPromise>(`/cards?columnId=${id}`);
+  return response.data;
 }

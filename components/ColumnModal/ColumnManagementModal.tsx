@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
 import { ModalProps } from '@/types/modalProps';
 import Modal from '../common/Modal';
 import FormField from '../compound/form/FormField';
 import useDashboardParamsId from '../Dashboard/useDashboardParamsId';
 import getDashboardColumn, { ColumnsType } from '../Dashboard/DashboardColumn/action';
+import { apiClient } from '@/lib/apiClient';
 
 const COLUMN_NAME_ERROR_MESSAGE = {
   ALREADY_EXISTS: '중복된 컬럼 이름입니다',
@@ -57,11 +57,11 @@ export default function ColumnManagementModal({
 
     try {
       if (updateOption) {
-        await api.put(`${EXTERNAL_API.COLUMNS.ROOT}/${columnId}`, {
+        await apiClient.put(`${EXTERNAL_API.COLUMNS.ROOT}/${columnId}`, {
           title: columnName,
         });
       } else {
-        await api.post(EXTERNAL_API.COLUMNS.ROOT, {
+        await apiClient.post(EXTERNAL_API.COLUMNS.ROOT, {
           title: columnName,
           dashboardId,
         });

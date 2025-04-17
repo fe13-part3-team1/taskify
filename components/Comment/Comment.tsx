@@ -1,12 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import { getItem } from '@/utils/localstorage';
 import { CommentsType } from '../compound/modal/types';
 import UserBadge from '../UserBadge/UserBadge';
 import Textarea from '../common/Textarea';
 import Button from '../common/Button';
-import { useState } from 'react';
-import { api } from '@/lib/api';
 import EXTERNAL_API from '@/constants/api/external';
 import { formatISODateTime } from '@/utils/formatDateTime';
+import { apiClient } from '@/lib/apiClient';
 
 interface Comment {
   comment: CommentsType;
@@ -34,7 +36,7 @@ export default function Comment({ comment, getComments }: Comment) {
 
   const handleCommentUpdate = async () => {
     try {
-      await api.put(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`, { content: editComment });
+      await apiClient.put(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`, { content: editComment });
       setIsEdit(false);
       getComments();
     } catch (error) {
@@ -44,7 +46,7 @@ export default function Comment({ comment, getComments }: Comment) {
 
   const handleCommentDelete = async () => {
     try {
-      await api.delete(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`);
+      await apiClient.delete(`${EXTERNAL_API.COMMENTS.ROOT}/${comment.id}`);
       getComments();
     } catch (error) {
       console.error(error);
