@@ -159,12 +159,12 @@ const ColumnDetailModal = ({
           <h2 className="text-semi12">담당자</h2>
           <div className="flex items-center gap-2">
             {renderProfileImage(cardData.assignee.profileImageUrl ?? '')}
-            <p className="text-regular12 text-black200">{cardData.assignee.nickname}</p>
+            <p className="text-regular12">{cardData.assignee.nickname}</p>
           </div>
         </div>
         <div className="flex w-[109px] flex-col gap-2 md:gap-[6px]">
           <h3 className="text-semi12">마감일</h3>
-          <p className="text-regular12 text-black200">{formatDate(cardData.dueDate, true)}</p>
+          <p className="text-regular12">{formatDate(cardData.dueDate, true)}</p>
         </div>
       </div>
       <div className="flex flex-col gap-4">
@@ -190,7 +190,7 @@ const ColumnDetailModal = ({
   const renderCommentInput = () => (
     <div className="mt-6 flex flex-col">
       <div className="relative flex flex-col gap-1">
-        <label htmlFor="comment" className="text-medium16 text-black200">
+        <label htmlFor="comment" className="text-medium16">
           댓글
         </label>
         <Textarea
@@ -231,7 +231,7 @@ const ColumnDetailModal = ({
   //       )}
   //     </div>
   //   ) : (
-  //     <p className="text-regular14 text-black200 flex items-center justify-center">
+  //     <p className="text-regular14 flex items-center justify-center">
   //       마지막 댓글입니다.
   //     </p>
   //   );
